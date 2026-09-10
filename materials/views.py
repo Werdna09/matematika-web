@@ -86,11 +86,18 @@ def search(request):
                 | Q(description__icontains=query)
                 | Q(topic__name__icontains=query)
                 | Q(material_type__name__icontains=query)
-                | Q(tags__name__icontains=query),
+                | Q(tags__name__icontains=query)
+                | Q(grades__name__icontains=query),
                 status=Material.Status.PUBLISHED,
             )
-            .select_related("topic", "material_type")
-            .prefetch_related("grades", "tags")
+            .select_related(
+                "topic",
+                "material_type",
+            )
+            .prefetch_related(
+                "grades",
+                "tags",
+            )
             .distinct()
         )
 

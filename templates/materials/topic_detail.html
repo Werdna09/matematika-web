@@ -10,12 +10,23 @@
 
 <div class="page-header">
 
-    <a
-        href="{% url 'materials:grade_detail' grade.slug %}"
-        class="back-link"
-    >
-        ← {{ grade.name }}
-    </a>
+    <nav class="breadcrumbs">
+        <a href="{% url 'core:home' %}">
+            Domů
+        </a>
+
+        <span>›</span>
+
+        <a href="{% url 'materials:grade_detail' grade.slug %}">
+            {{ grade.name }}
+        </a>
+
+        <span>›</span>
+
+        <span>
+            {{ topic.name }}
+        </span>
+    </nav>
 
     <p class="eyebrow">
         {{ grade.name }}

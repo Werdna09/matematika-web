@@ -10,12 +10,23 @@
 
 <div class="page-header">
 
-    <a
-        href="{% url 'core:home' %}"
-        class="back-link"
-    >
-        ← Zpět
-    </a>
+    <nav class="breadcrumbs">
+
+        <a href="{% url 'core:home' %}">
+            Domů
+        </a>
+
+        <span>›</span>
+
+        <span>
+            Hledání
+        </span>
+
+    </nav>
+
+    <p class="eyebrow">
+        Materiály
+    </p>
 
     <h1>
         Hledání
@@ -34,7 +45,7 @@
         type="search"
         name="q"
         value="{{ query }}"
-        placeholder="Např. kružnice, logaritmus, maturita…"
+        placeholder="Např. vektory, logaritmy, maturita…"
         autofocus
     >
 
@@ -51,7 +62,7 @@
 {% if query %}
 
     <p class="search-info">
-        Výsledky pro „{{ query }}“
+        Výsledky hledání pro „{{ query }}“
     </p>
 
 
@@ -81,7 +92,21 @@
 
                     {% endif %}
 
+
+                    <div class="search-grades">
+
+                        {% for grade in material.grades.all %}
+
+                            <span>
+                                {{ grade.name }}
+                            </span>
+
+                        {% endfor %}
+
+                    </div>
+
                 </div>
+
 
                 <a
                     href="{% url 'materials:material_detail' material.slug %}"
@@ -92,17 +117,33 @@
 
             </article>
 
+
         {% empty %}
 
             <div class="empty-state">
-                <h2>Nic jsme nenašli.</h2>
+
+                <h2>
+                    Nic jsme nenašli.
+                </h2>
 
                 <p>
-                    Zkus jiné slovo nebo obecnější výraz.
+                    Zkus jiné nebo obecnější hledané slovo.
                 </p>
+
             </div>
 
         {% endfor %}
+
+    </div>
+
+
+{% else %}
+
+    <div class="empty-state">
+
+        <p>
+            Zadej název tématu, materiálu nebo klíčové slovo.
+        </p>
 
     </div>
 
