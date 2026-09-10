@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    {{ topic.name }} | Matematika
+{% endblock %}
+
+
+{% block content %}
+
+<div class="page-header">
+
+    <a
+        href="{% url 'materials:grade_detail' grade.slug %}"
+        class="back-link"
+    >
+        ← {{ grade.name }}
+    </a>
+
+    <p class="eyebrow">
+        {{ grade.name }}
+    </p>
+
+    <h1>
+        {{ topic.name }}
+    </h1>
+
+    {% if topic.description %}
+
+        <p class="hero-text">
+            {{ topic.description }}
+        </p>
+
+    {% endif %}
+
+</div>
+
+
+{% for material_type in material_types %}
+
+<section class="topic-material-section">
+
+    <div class="section-heading">
+        <h2>
+            {{ material_type.name }}
+        </h2>
+    </div>
+
+
+    <div class="material-list">
+
+        {% for material in material_type.public_materials %}
+
+            <article class="material-card">
+
+                <div class="material-info">
+
+                    <h3>
+                        {{ material.title }}
+                    </h3>
+
+                    {% if material.description %}
+
+                        <p>
+                            {{ material.description }}
+                        </p>
+
+                    {% endif %}
+
+                </div>
+
+
+                <a
+                    href="{% url 'materials:material_detail' material.slug %}"
+                    class="button"
+                >
+                    Zobrazit
+                </a>
+
+            </article>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+
+{% empty %}
+
+<div class="empty-state">
+
+    <h2>
+        Zatím zde nic není.
+    </h2>
+
+    <p>
+        Pro toto téma zatím nebyly publikovány žádné materiály.
+    </p>
+
+</div>
+
+{% endfor %}
+
+{% endblock %}

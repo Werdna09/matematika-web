@@ -17,6 +17,10 @@
         ← Zpět
     </a>
 
+    <p class="eyebrow">
+        Materiály
+    </p>
+
     <h1>
         {{ grade.name }}
     </h1>
@@ -24,81 +28,54 @@
 </div>
 
 
-{% for topic in topics %}
+<section>
 
-<section class="topic">
-
-    <h2>
-        {{ topic.name }}
-    </h2>
-
-    {% if topic.description %}
-
-        <p class="topic-description">
-            {{ topic.description }}
-        </p>
-
-    {% endif %}
+    <div class="section-heading">
+        <h2>Témata</h2>
+    </div>
 
 
-    <div class="material-list">
+    <div class="topic-grid">
 
-        {% for material in topic.public_materials %}
+        {% for topic in topics %}
 
-            <article class="material-card">
+            <a
+                href="{% url 'materials:topic_detail' grade.slug topic.slug %}"
+                class="topic-card"
+            >
 
-                <div class="material-info">
-
-                    <span class="material-type">
-                        {{ material.material_type.name }}
-                    </span>
+                <div>
 
                     <h3>
-                        {{ material.title }}
+                        {{ topic.name }}
                     </h3>
 
-                    {% if material.description %}
+                    {% if topic.description %}
 
                         <p>
-                            {{ material.description }}
+                            {{ topic.description }}
                         </p>
 
                     {% endif %}
 
                 </div>
 
+                <span class="arrow">
+                    →
+                </span>
 
-                <a
-                    href="{% url 'materials:material_detail' material.slug %}"
-                    class="button"
-                >
-                    Zobrazit
-                </a>
+            </a>
 
-            </article>
+        {% empty %}
+
+            <p>
+                Pro tento ročník zatím nejsou žádná témata.
+            </p>
 
         {% endfor %}
 
     </div>
 
 </section>
-
-
-{% empty %}
-
-<div class="empty-state">
-
-    <h2>
-        Zatím zde nic není.
-    </h2>
-
-    <p>
-        Pro tento ročník zatím nebyly publikovány
-        žádné materiály.
-    </p>
-
-</div>
-
-{% endfor %}
 
 {% endblock %}

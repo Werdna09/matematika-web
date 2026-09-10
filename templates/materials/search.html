@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    Hledání | Matematika
+{% endblock %}
+
+
+{% block content %}
+
+<div class="page-header">
+
+    <a
+        href="{% url 'core:home' %}"
+        class="back-link"
+    >
+        ← Zpět
+    </a>
+
+    <h1>
+        Hledání
+    </h1>
+
+</div>
+
+
+<form
+    action="{% url 'materials:search' %}"
+    method="get"
+    class="search-page-form"
+>
+
+    <input
+        type="search"
+        name="q"
+        value="{{ query }}"
+        placeholder="Např. kružnice, logaritmus, maturita…"
+        autofocus
+    >
+
+    <button
+        type="submit"
+        class="button"
+    >
+        Hledat
+    </button>
+
+</form>
+
+
+{% if query %}
+
+    <p class="search-info">
+        Výsledky pro „{{ query }}“
+    </p>
+
+
+    <div class="material-list">
+
+        {% for material in materials %}
+
+            <article class="material-card">
+
+                <div class="material-info">
+
+                    <span class="material-type">
+                        {{ material.material_type.name }}
+                        ·
+                        {{ material.topic.name }}
+                    </span>
+
+                    <h3>
+                        {{ material.title }}
+                    </h3>
+
+                    {% if material.description %}
+
+                        <p>
+                            {{ material.description }}
+                        </p>
+
+                    {% endif %}
+
+                </div>
+
+                <a
+                    href="{% url 'materials:material_detail' material.slug %}"
+                    class="button"
+                >
+                    Zobrazit
+                </a>
+
+            </article>
+
+        {% empty %}
+
+            <div class="empty-state">
+                <h2>Nic jsme nenašli.</h2>
+
+                <p>
+                    Zkus jiné slovo nebo obecnější výraz.
+                </p>
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+{% endif %}
+
+{% endblock %}

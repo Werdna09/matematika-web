@@ -16,4 +16,14 @@ urlpatterns = [
         views.material_detail,
         name="material_detail",
     ),
+    path(
+        "hledat/",
+        views.search,
+        name="search",
+    ),
+    path(
+        "rocnik/<slug:grade_slug>/tema/<slug:topic_slug>/",
+        views.topic_detail,
+        name="topic_detail",
+),
 ]
