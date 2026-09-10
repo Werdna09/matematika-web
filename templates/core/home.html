@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    Matematika
+{% endblock %}
+
+
+{% block content %}
+
+<section class="hero">
+
+    <p class="eyebrow">
+        Učební materiály
+    </p>
+
+    <h1>
+        Matematika
+    </h1>
+
+    <p class="hero-text">
+        Učební texty, pracovní listy a další materiály
+        k výuce matematiky.
+    </p>
+
+</section>
+
+
+<section>
+
+    <div class="section-heading">
+        <h2>Ročníky</h2>
+    </div>
+
+    <div class="grade-grid">
+
+        {% for grade in grades %}
+
+            <a
+                href="{% url 'materials:grade_detail' grade.slug %}"
+                class="grade-card"
+            >
+
+                <span class="grade-name">
+                    {{ grade.name }}
+                </span>
+
+                <span class="arrow">
+                    →
+                </span>
+
+            </a>
+
+        {% empty %}
+
+            <p>
+                Zatím nebyly přidány žádné ročníky.
+            </p>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endblock %}

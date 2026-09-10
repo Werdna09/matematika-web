@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    {{ grade.name }} | Matematika
+{% endblock %}
+
+
+{% block content %}
+
+<div class="page-header">
+
+    <a
+        href="{% url 'core:home' %}"
+        class="back-link"
+    >
+        ← Zpět
+    </a>
+
+    <h1>
+        {{ grade.name }}
+    </h1>
+
+</div>
+
+
+{% for topic in topics %}
+
+<section class="topic">
+
+    <h2>
+        {{ topic.name }}
+    </h2>
+
+    {% if topic.description %}
+
+        <p class="topic-description">
+            {{ topic.description }}
+        </p>
+
+    {% endif %}
+
+
+    <div class="material-list">
+
+        {% for material in topic.public_materials %}
+
+            <article class="material-card">
+
+                <div class="material-info">
+
+                    <span class="material-type">
+                        {{ material.material_type.name }}
+                    </span>
+
+                    <h3>
+                        {{ material.title }}
+                    </h3>
+
+                    {% if material.description %}
+
+                        <p>
+                            {{ material.description }}
+                        </p>
+
+                    {% endif %}
+
+                </div>
+
+
+                <a
+                    href="{{ material.pdf_file.url }}"
+                    target="_blank"
+                    rel="noopener"
+                    class="button"
+                >
+                    Otevřít PDF
+                </a>
+
+            </article>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+
+{% empty %}
+
+<div class="empty-state">
+
+    <h2>
+        Zatím zde nic není.
+    </h2>
+
+    <p>
+        Pro tento ročník zatím nebyly publikovány
+        žádné materiály.
+    </p>
+
+</div>
+
+{% endfor %}
+
+{% endblock %}

@@ -1,0 +1,58 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {% block title %}
+            Matematika
+        {% endblock %}
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/style.css' %}"
+    >
+</head>
+
+<body>
+
+    <header class="site-header">
+        <div class="container header-content">
+
+            <a
+                href="{% url 'core:home' %}"
+                class="site-title"
+            >
+                Matematika
+            </a>
+
+            <nav>
+                <a href="{% url 'core:home' %}">
+                    Materiály
+                </a>
+            </nav>
+
+        </div>
+    </header>
+
+    <main class="container">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            Matematika
+        </div>
+    </footer>
+
+</body>
+</html>
