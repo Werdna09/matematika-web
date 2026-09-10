@@ -2,7 +2,7 @@
 
 
 {% block title %}
-    {{ material.title }} | Matematika
+{{ material.title }} | Matematika
 {% endblock %}
 
 
@@ -10,12 +10,39 @@
 
 <div class="page-header">
 
-    <a
-        href="javascript:history.back()"
-        class="back-link"
-    >
-        ← Zpět
-    </a>
+    <nav class="breadcrumbs">
+
+        <a href="{% url 'core:home' %}">
+            Domů
+        </a>
+
+        <span>›</span>
+
+        {% with grade=material.grades.all.0 %}
+
+        {% if grade %}
+
+        <a href="{% url 'materials:grade_detail' grade.slug %}">
+            {{ grade.name }}
+        </a>
+
+        <span>›</span>
+
+        <a href="{% url 'materials:topic_detail' grade.slug material.topic.slug %}">
+            {{ material.topic.name }}
+        </a>
+
+        <span>›</span>
+
+        {% endif %}
+
+        {% endwith %}
+
+        <span>
+            {{ material.title }}
+        </span>
+
+    </nav>
 
     <p class="eyebrow">
         {{ material.material_type.name }}
@@ -29,7 +56,7 @@
         {{ material.topic.name }}
         ·
         {% for grade in material.grades.all %}
-            {{ grade.name }}{% if not forloop.last %}, {% endif %}
+        {{ grade.name }}{% if not forloop.last %}, {% endif %}
         {% endfor %}
     </p>
 
@@ -40,31 +67,22 @@
 
     {% if material.description %}
 
-        <div class="material-description">
-            <p>
-                {{ material.description }}
-            </p>
-        </div>
+    <div class="material-description">
+        <p>
+            {{ material.description }}
+        </p>
+    </div>
 
     {% endif %}
 
 
     <div class="material-actions">
 
-        <a
-            href="{{ material.pdf_file.url }}"
-            target="_blank"
-            rel="noopener"
-            class="button"
-        >
+        <a href="{{ material.pdf_file.url }}" target="_blank" rel="noopener" class="button">
             Otevřít PDF
         </a>
 
-        <a
-            href="{{ material.pdf_file.url }}"
-            download
-            class="button button-secondary"
-        >
+        <a href="{{ material.pdf_file.url }}" download class="button button-secondary">
             Stáhnout PDF
         </a>
 
