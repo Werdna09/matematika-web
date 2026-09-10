@@ -1,0 +1,355 @@
+[
+{
+  "model": "materials.grade",
+  "pk": 1,
+  "fields": {
+    "name": "1. roèník",
+    "slug": "1-rocnik",
+    "order": 0
+  }
+},
+{
+  "model": "materials.grade",
+  "pk": 2,
+  "fields": {
+    "name": "2. roèník",
+    "slug": "2-rocnik",
+    "order": 0
+  }
+},
+{
+  "model": "materials.grade",
+  "pk": 3,
+  "fields": {
+    "name": "3. roèník",
+    "slug": "3-rocnik",
+    "order": 0
+  }
+},
+{
+  "model": "materials.grade",
+  "pk": 4,
+  "fields": {
+    "name": "4. roèník",
+    "slug": "4-rocnik",
+    "order": 0
+  }
+},
+{
+  "model": "materials.topic",
+  "pk": 1,
+  "fields": {
+    "name": "Výroková logika",
+    "slug": "vyrokova-logika",
+    "description": "",
+    "order": 0
+  }
+},
+{
+  "model": "materials.topic",
+  "pk": 2,
+  "fields": {
+    "name": "Funkce",
+    "slug": "funkce",
+    "description": "",
+    "order": 0
+  }
+},
+{
+  "model": "materials.topic",
+  "pk": 3,
+  "fields": {
+    "name": "Analytická geometrie",
+    "slug": "analyticka-geometrie",
+    "description": "",
+    "order": 0
+  }
+},
+{
+  "model": "materials.topic",
+  "pk": 4,
+  "fields": {
+    "name": "Opakování a rozšíøení uèiva ZŠ",
+    "slug": "opakovani-a-rozsireni-uciva-zs",
+    "description": "",
+    "order": 10
+  }
+},
+{
+  "model": "materials.topic",
+  "pk": 5,
+  "fields": {
+    "name": "Mocniny a odmocniny",
+    "slug": "mocniny-a-odmocniny",
+    "description": "",
+    "order": 20
+  }
+},
+{
+  "model": "materials.topic",
+  "pk": 6,
+  "fields": {
+    "name": "Algebraické výrazy",
+    "slug": "algebraicke-vyrazy",
+    "description": "",
+    "order": 30
+  }
+},
+{
+  "model": "materials.topic",
+  "pk": 7,
+  "fields": {
+    "name": "Lineární funkce, rovnice a nerovnice",
+    "slug": "linearni-funkce-rovnice-a-nerovnice",
+    "description": "",
+    "order": 40
+  }
+},
+{
+  "model": "materials.topic",
+  "pk": 8,
+  "fields": {
+    "name": "Kvadratické funkce, rovnice a nerovnice",
+    "slug": "kvadraticke-funkce-rovnice-a-nerovnice",
+    "description": "",
+    "order": 50
+  }
+},
+{
+  "model": "materials.topic",
+  "pk": 9,
+  "fields": {
+    "name": "Funkce a rovnice",
+    "slug": "funkce-a-rovnice",
+    "description": "",
+    "order": 10
+  }
+},
+{
+  "model": "materials.topic",
+  "pk": 10,
+  "fields": {
+    "name": "Goniometrie a trigonometrie",
+    "slug": "goniometrie-a-trigonometrie",
+    "description": "",
+    "order": 20
+  }
+},
+{
+  "model": "materials.topic",
+  "pk": 11,
+  "fields": {
+    "name": "Planimetrie",
+    "slug": "planimetrie",
+    "description": "",
+    "order": 30
+  }
+},
+{
+  "model": "materials.topic",
+  "pk": 12,
+  "fields": {
+    "name": "Stereometrie",
+    "slug": "stereometrie",
+    "description": "",
+    "order": 40
+  }
+},
+{
+  "model": "materials.topic",
+  "pk": 13,
+  "fields": {
+    "name": "Komplexní èísla",
+    "slug": "komplexni-cisla",
+    "description": "",
+    "order": 10
+  }
+},
+{
+  "model": "materials.topic",
+  "pk": 14,
+  "fields": {
+    "name": "Analytická geometrie v rovinì",
+    "slug": "analyticka-geometrie-v-rovine",
+    "description": "",
+    "order": 20
+  }
+},
+{
+  "model": "materials.topic",
+  "pk": 15,
+  "fields": {
+    "name": "Analytická geometrie v prostoru",
+    "slug": "analyticka-geometrie-v-prostoru",
+    "description": "",
+    "order": 30
+  }
+},
+{
+  "model": "materials.topic",
+  "pk": 16,
+  "fields": {
+    "name": "Kuželoseèky",
+    "slug": "kuzelosecky",
+    "description": "",
+    "order": 40
+  }
+},
+{
+  "model": "materials.topic",
+  "pk": 17,
+  "fields": {
+    "name": "Posloupnosti",
+    "slug": "posloupnosti",
+    "description": "",
+    "order": 10
+  }
+},
+{
+  "model": "materials.topic",
+  "pk": 18,
+  "fields": {
+    "name": "Kombinatorika, pravdìpodobnost a statistika",
+    "slug": "kombinatorika-pravdepodobnost-a-statistika",
+    "description": "",
+    "order": 20
+  }
+},
+{
+  "model": "materials.topic",
+  "pk": 19,
+  "fields": {
+    "name": "Opakování",
+    "slug": "opakovani",
+    "description": "",
+    "order": 30
+  }
+},
+{
+  "model": "materials.materialtype",
+  "pk": 1,
+  "fields": {
+    "name": "Uèební text",
+    "slug": "ucebni-text",
+    "order": 10
+  }
+},
+{
+  "model": "materials.materialtype",
+  "pk": 2,
+  "fields": {
+    "name": "Pracovní list",
+    "slug": "pracovni-list",
+    "order": 20
+  }
+},
+{
+  "model": "materials.materialtype",
+  "pk": 3,
+  "fields": {
+    "name": "Test",
+    "slug": "test",
+    "order": 50
+  }
+},
+{
+  "model": "materials.materialtype",
+  "pk": 4,
+  "fields": {
+    "name": "Procvièování",
+    "slug": "procvicovani",
+    "order": 30
+  }
+},
+{
+  "model": "materials.materialtype",
+  "pk": 5,
+  "fields": {
+    "name": "Shrnutí",
+    "slug": "shrnuti",
+    "order": 40
+  }
+},
+{
+  "model": "materials.materialtype",
+  "pk": 6,
+  "fields": {
+    "name": "Øešení",
+    "slug": "reseni",
+    "order": 60
+  }
+},
+{
+  "model": "materials.materialtype",
+  "pk": 7,
+  "fields": {
+    "name": "Ostatní",
+    "slug": "ostatni",
+    "order": 90
+  }
+},
+{
+  "model": "materials.tag",
+  "pk": 1,
+  "fields": {
+    "name": "maturita",
+    "slug": "maturita"
+  }
+},
+{
+  "model": "materials.tag",
+  "pk": 2,
+  "fields": {
+    "name": "opakování",
+    "slug": "opakovani"
+  }
+},
+{
+  "model": "materials.tag",
+  "pk": 3,
+  "fields": {
+    "name": "bez kalkulaèky",
+    "slug": "bez-kalkulacky"
+  }
+},
+{
+  "model": "materials.tag",
+  "pk": 4,
+  "fields": {
+    "name": "s parametrem",
+    "slug": "s-parametrem"
+  }
+},
+{
+  "model": "materials.tag",
+  "pk": 5,
+  "fields": {
+    "name": "slovní úlohy",
+    "slug": "slovni-ulohy"
+  }
+},
+{
+  "model": "materials.tag",
+  "pk": 6,
+  "fields": {
+    "name": "grafické øešení",
+    "slug": "graficke-reseni"
+  }
+},
+{
+  "model": "materials.tag",
+  "pk": 7,
+  "fields": {
+    "name": "konstrukce",
+    "slug": "konstrukce"
+  }
+},
+{
+  "model": "materials.tag",
+  "pk": 8,
+  "fields": {
+    "name": "technické aplikace",
+    "slug": "technicke-aplikace"
+  }
+}
+]
