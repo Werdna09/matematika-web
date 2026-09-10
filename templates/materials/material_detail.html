@@ -75,6 +75,15 @@
 
     {% endif %}
 
+    {% if material.html_content %}
+
+    <article class="online-content">
+
+        {{ material.html_content|safe }}
+
+    </article>
+
+    {% endif %}
 
     <div class="material-actions">
 

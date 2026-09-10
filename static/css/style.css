@@ -1137,3 +1137,44 @@ section {
     }
 
 }
+
+.online-content {
+    max-width: 780px;
+
+    margin-bottom: 36px;
+
+    font-size: 1.02rem;
+    line-height: 1.75;
+}
+
+
+.online-content h1,
+.online-content h2,
+.online-content h3 {
+    margin-top: 2em;
+    margin-bottom: 0.7em;
+
+    line-height: 1.2;
+}
+
+
+.online-content h2 {
+    font-size: 1.7rem;
+}
+
+
+.online-content h3 {
+    font-size: 1.3rem;
+}
+
+
+.online-content p {
+    margin: 1em 0;
+}
+
+
+.online-content .math.display {
+    overflow-x: auto;
+
+    margin: 1.5em 0;
+}

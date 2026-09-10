@@ -3,24 +3,32 @@
 <!DOCTYPE html>
 <html lang="cs">
 
+
+
 <head>
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>
         {% block title %}
-            Matematika
+        Matematika
         {% endblock %}
     </title>
 
-    <link
-        rel="stylesheet"
-        href="{% static 'css/style.css' %}"
-    >
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['\\(', '\\)']],
+                displayMath: [['\\[', '\\]']]
+            }
+        };
+    </script>
+
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
 </head>
 
 <body>
@@ -29,29 +37,17 @@
 
         <div class="container header-content">
 
-            <a
-                href="{% url 'core:home' %}"
-                class="site-title"
-            >
+            <a href="{% url 'core:home' %}" class="site-title">
                 Matematika
             </a>
 
 
             <div class="header-actions">
 
-                <form
-                    action="{% url 'materials:search' %}"
-                    method="get"
-                    class="search-form"
-                >
+                <form action="{% url 'materials:search' %}" method="get" class="search-form">
 
-                    <input
-                        type="search"
-                        name="q"
-                        value="{{ request.GET.q|default:'' }}"
-                        placeholder="Hledat materiál…"
-                        aria-label="Hledat materiál"
-                    >
+                    <input type="search" name="q" value="{{ request.GET.q|default:'' }}" placeholder="Hledat materiál…"
+                        aria-label="Hledat materiál">
 
                     <button type="submit">
                         Hledat
