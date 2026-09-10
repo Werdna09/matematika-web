@@ -38,115 +38,236 @@
 <form
     action="{% url 'materials:search' %}"
     method="get"
-    class="search-page-form"
+    class="filter-form"
 >
 
-    <input
-        type="search"
-        name="q"
-        value="{{ query }}"
-        placeholder="Např. vektory, logaritmy, maturita…"
-        autofocus
-    >
+    <div class="filter-search">
 
-    <button
-        type="submit"
-        class="button"
-    >
-        Hledat
-    </button>
+        <label for="search">
+            Hledat
+        </label>
+
+        <input
+            id="search"
+            type="search"
+            name="q"
+            value="{{ query }}"
+            placeholder="Např. vektory, funkce, maturita…"
+        >
+
+    </div>
+
+
+    <div class="filter-grid">
+
+        <div class="filter-field">
+
+            <label for="grade">
+                Ročník
+            </label>
+
+            <select
+                id="grade"
+                name="grade"
+            >
+
+                <option value="">
+                    Všechny ročníky
+                </option>
+
+                {% for grade in grades %}
+
+                    <option
+                        value="{{ grade.id }}"
+                        {% if grade.id == selected_grade_id %}
+                            selected
+                        {% endif %}
+                    >
+                        {{ grade.name }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+
+        <div class="filter-field">
+
+            <label for="topic">
+                Téma
+            </label>
+
+            <select
+                id="topic"
+                name="topic"
+            >
+
+                <option value="">
+                    Všechna témata
+                </option>
+
+                {% for topic in topics %}
+
+                    <option
+                        value="{{ topic.id }}"
+                        {% if topic.id == selected_topic_id %}
+                            selected
+                        {% endif %}
+                    >
+                        {{ topic.name }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+
+        <div class="filter-field">
+
+            <label for="type">
+                Typ materiálu
+            </label>
+
+            <select
+                id="type"
+                name="type"
+            >
+
+                <option value="">
+                    Všechny typy
+                </option>
+
+                {% for material_type in material_types %}
+
+                    <option
+                        value="{{ material_type.id }}"
+                        {% if material_type.id == selected_type_id %}
+                            selected
+                        {% endif %}
+                    >
+                        {{ material_type.name }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+    </div>
+
+
+    <div class="filter-actions">
+
+        <button
+            type="submit"
+            class="button"
+        >
+            Hledat
+        </button>
+
+        <a
+            href="{% url 'materials:search' %}"
+            class="button button-secondary"
+        >
+            Zrušit filtry
+        </a>
+
+    </div>
 
 </form>
 
 
-{% if query %}
+<div class="search-results-header">
 
-    <p class="search-info">
-        Výsledky hledání pro „{{ query }}“
-    </p>
+    <h2>
+        Výsledky
+    </h2>
 
+    <span>
+        {{ materials|length }}
+        {% if materials|length == 1 %}
+            materiál
+        {% else %}
+            materiálů
+        {% endif %}
+    </span>
 
-    <div class="material-list">
-
-        {% for material in materials %}
-
-            <article class="material-card">
-
-                <div class="material-info">
-
-                    <span class="material-type">
-                        {{ material.material_type.name }}
-                        ·
-                        {{ material.topic.name }}
-                    </span>
-
-                    <h3>
-                        {{ material.title }}
-                    </h3>
-
-                    {% if material.description %}
-
-                        <p>
-                            {{ material.description }}
-                        </p>
-
-                    {% endif %}
+</div>
 
 
-                    <div class="search-grades">
+<div class="material-list">
 
-                        {% for grade in material.grades.all %}
+    {% for material in materials %}
 
-                            <span>
-                                {{ grade.name }}
-                            </span>
+        <article class="material-card">
 
-                        {% endfor %}
+            <div class="material-info">
 
-                    </div>
+                <span class="material-type">
+                    {{ material.material_type.name }}
+                    ·
+                    {{ material.topic.name }}
+                </span>
+
+                <h3>
+                    {{ material.title }}
+                </h3>
+
+                {% if material.description %}
+
+                    <p>
+                        {{ material.description }}
+                    </p>
+
+                {% endif %}
+
+
+                <div class="search-grades">
+
+                    {% for grade in material.grades.all %}
+
+                        <span>
+                            {{ grade.name }}
+                        </span>
+
+                    {% endfor %}
 
                 </div>
 
-
-                <a
-                    href="{% url 'materials:material_detail' material.slug %}"
-                    class="button"
-                >
-                    Zobrazit
-                </a>
-
-            </article>
-
-
-        {% empty %}
-
-            <div class="empty-state">
-
-                <h2>
-                    Nic jsme nenašli.
-                </h2>
-
-                <p>
-                    Zkus jiné nebo obecnější hledané slovo.
-                </p>
-
             </div>
 
-        {% endfor %}
 
-    </div>
+            <a
+                href="{% url 'materials:material_detail' material.slug %}"
+                class="button"
+            >
+                Zobrazit
+            </a>
+
+        </article>
 
 
-{% else %}
+    {% empty %}
 
-    <div class="empty-state">
+        <div class="empty-state">
 
-        <p>
-            Zadej název tématu, materiálu nebo klíčové slovo.
-        </p>
+            <h2>
+                Nic jsme nenašli.
+            </h2>
 
-    </div>
+            <p>
+                Zkus změnit hledaný výraz nebo některý z filtrů.
+            </p>
 
-{% endif %}
+        </div>
+
+    {% endfor %}
+
+</div>
 
 {% endblock %}
