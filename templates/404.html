@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Stránka nenalezena | Matematika
+{% endblock %}
+
+{% block content %}
+
+<section class="empty-state">
+
+    <p class="eyebrow">
+        Chyba 404
+    </p>
+
+    <h1>
+        Stránka nebyla nalezena
+    </h1>
+
+    <p>
+        Odkaz je neplatný nebo už daná stránka neexistuje.
+    </p>
+
+    <a
+        href="{% url 'core:home' %}"
+        class="button"
+    >
+        Zpět na hlavní stránku
+    </a>
+
+</section>
+
+{% endblock %}
