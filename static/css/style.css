@@ -360,3 +360,55 @@ section {
     }
 
 }
+
+.material-meta {
+    color: var(--muted);
+    font-size: 0.95rem;
+}
+
+
+.material-detail {
+    max-width: 760px;
+}
+
+
+.material-description {
+    padding: 24px;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    font-size: 1.05rem;
+}
+
+
+.material-actions {
+    display: flex;
+    gap: 12px;
+
+    margin-top: 24px;
+}
+
+
+.button-secondary {
+    background: transparent;
+    color: var(--text);
+
+    border: 1px solid var(--border);
+}
+
+
+.button-secondary:hover {
+    background: var(--surface);
+}
+
+
+@media (max-width: 650px) {
+
+    .material-actions {
+        flex-direction: column;
+    }
+
+}

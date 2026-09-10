@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    {{ material.title }} | Matematika
+{% endblock %}
+
+
+{% block content %}
+
+<div class="page-header">
+
+    <a
+        href="javascript:history.back()"
+        class="back-link"
+    >
+        ← Zpět
+    </a>
+
+    <p class="eyebrow">
+        {{ material.material_type.name }}
+    </p>
+
+    <h1>
+        {{ material.title }}
+    </h1>
+
+    <p class="material-meta">
+        {{ material.topic.name }}
+        ·
+        {% for grade in material.grades.all %}
+            {{ grade.name }}{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+    </p>
+
+</div>
+
+
+<section class="material-detail">
+
+    {% if material.description %}
+
+        <div class="material-description">
+            <p>
+                {{ material.description }}
+            </p>
+        </div>
+
+    {% endif %}
+
+
+    <div class="material-actions">
+
+        <a
+            href="{{ material.pdf_file.url }}"
+            target="_blank"
+            rel="noopener"
+            class="button"
+        >
+            Otevřít PDF
+        </a>
+
+        <a
+            href="{{ material.pdf_file.url }}"
+            download
+            class="button button-secondary"
+        >
+            Stáhnout PDF
+        </a>
+
+    </div>
+
+</section>
+
+{% endblock %}

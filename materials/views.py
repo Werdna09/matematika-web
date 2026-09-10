@@ -25,3 +25,18 @@ def grade_detail(request, slug):
             "topics": topics,
         },
     )
+
+def material_detail(request, slug):
+    material = get_object_or_404(
+        Material,
+        slug=slug,
+        status=Material.Status.PUBLISHED,
+    )
+
+    return render(
+        request,
+        "materials/material_detail.html",
+        {
+            "material": material,
+        },
+    )

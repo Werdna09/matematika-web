@@ -11,4 +11,9 @@ urlpatterns = [
         views.grade_detail,
         name="grade_detail",
     ),
+    path(
+        "material/<slug:slug>/",
+        views.material_detail,
+        name="material_detail",
+    ),
 ]

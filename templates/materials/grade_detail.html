@@ -69,12 +69,10 @@
 
 
                 <a
-                    href="{{ material.pdf_file.url }}"
-                    target="_blank"
-                    rel="noopener"
+                    href="{% url 'materials:material_detail' material.slug %}"
                     class="button"
                 >
-                    Otevřít PDF
+                    Zobrazit
                 </a>
 
             </article>
