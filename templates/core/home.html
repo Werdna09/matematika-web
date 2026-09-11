@@ -1,66 +1,159 @@
 {% extends "base.html" %}
 
-
-{% block title %}
-    Matematika
-{% endblock %}
-
+{% block title %}Mathera — středoškolská matematika{% endblock %}
 
 {% block content %}
 
-<section class="hero">
+<section class="home-hero">
+    <div class="hero-copy">
+        <p class="eyebrow">Matematika pro střední školu</p>
 
-    <p class="eyebrow">
-        Učební materiály
-    </p>
+        <h1>
+            Matematika,<br>
+            která dává <span class="hero-accent">smysl.</span>
+        </h1>
 
-    <h1>
-        Matematika
-    </h1>
+        <p class="hero-text">
+            Přehledné učební texty, pracovní listy, procvičování a testy.
+            Na jednom místě, bez zbytečného balastu.
+        </p>
 
-    <p class="hero-text">
-        Učební texty, pracovní listy, testy a další materiály
-        k výuce matematiky na střední škole.
-    </p>
+        <div class="hero-actions">
+            <a href="#rocniky" class="button">Procházet materiály</a>
+            <a href="{% url 'materials:search' %}" class="button button-secondary">Vyhledat téma</a>
+        </div>
 
+        <div class="hero-meta" aria-label="Typy obsahu">
+            <span>Učební texty</span>
+            <span>Pracovní listy</span>
+            <span>Testy</span>
+            <span>Shrnutí</span>
+        </div>
+    </div>
+
+    <div class="math-board" aria-hidden="true">
+        <div class="math-board-topline">
+            <span>mathera / notes</span>
+            <span>01</span>
+        </div>
+
+        <div class="math-graph">
+            <svg viewBox="0 0 420 260" role="img" aria-hidden="true">
+                <g class="graph-grid">
+                    <line x1="20" y1="50" x2="400" y2="50" />
+                    <line x1="20" y1="100" x2="400" y2="100" />
+                    <line x1="20" y1="150" x2="400" y2="150" />
+                    <line x1="20" y1="200" x2="400" y2="200" />
+                    <line x1="80" y1="20" x2="80" y2="240" />
+                    <line x1="140" y1="20" x2="140" y2="240" />
+                    <line x1="200" y1="20" x2="200" y2="240" />
+                    <line x1="260" y1="20" x2="260" y2="240" />
+                    <line x1="320" y1="20" x2="320" y2="240" />
+                    <line x1="380" y1="20" x2="380" y2="240" />
+                </g>
+
+                <g class="graph-axes">
+                    <line x1="20" y1="180" x2="402" y2="180" />
+                    <line x1="200" y1="238" x2="200" y2="18" />
+                </g>
+
+                <path class="graph-curve" d="M38 42 C110 190, 155 225, 200 225 C245 225, 290 190, 362 42" />
+                <circle class="graph-point" cx="200" cy="225" r="4" />
+            </svg>
+        </div>
+
+        <div class="math-formula math-formula-main">
+            \( f(x)=a(x-x_0)^2+y_0 \)
+        </div>
+
+        <div class="math-formula-row">
+            <span>\( \sin^2 x+\cos^2 x=1 \)</span>
+            <span>\( \vec u\cdot\vec v \)</span>
+        </div>
+    </div>
 </section>
 
+<section class="home-section" id="obsah">
+    <div class="section-intro">
+        <div>
+            <p class="eyebrow">Obsah</p>
+            <h2>Nejen soubory ke stažení.</h2>
+        </div>
 
-<section>
+        <p>
+            Mathera má být místo, kde se dá matematika projít systematicky:
+            od výkladu přes procvičení až po ověření, že tomu člověk opravdu rozumí.
+        </p>
+    </div>
 
-    <div class="section-heading">
-        <h2>Vyber ročník</h2>
+    <div class="feature-grid">
+        <article class="feature-card">
+            <span class="feature-symbol">01</span>
+            <h3>Učební texty</h3>
+            <p>Výklad témat v souvislostech, s příklady a důrazem na pochopení postupu.</p>
+        </article>
+
+        <article class="feature-card">
+            <span class="feature-symbol">02</span>
+            <h3>Procvičování</h3>
+            <p>Pracovní listy a úlohy pro samostatnou práci, opakování i přípravu do školy.</p>
+        </article>
+
+        <article class="feature-card">
+            <span class="feature-symbol">03</span>
+            <h3>Testy a shrnutí</h3>
+            <p>Rychlé zopakování podstatného a materiály pro ověření zvládnutého učiva.</p>
+        </article>
+    </div>
+</section>
+
+<section class="home-section" id="rocniky">
+    <div class="section-intro section-intro-compact">
+        <div>
+            <p class="eyebrow">Knihovna</p>
+            <h2>Vyber ročník.</h2>
+        </div>
+
+        <p>Materiály jsou rozdělené podle ročníků a tematických celků.</p>
     </div>
 
     <div class="grade-grid">
-
         {% for grade in grades %}
+            <a href="{% url 'materials:grade_detail' grade.slug %}" class="grade-card">
+                <span class="grade-card-index">0{{ forloop.counter }}</span>
 
-            <a
-                href="{% url 'materials:grade_detail' grade.slug %}"
-                class="grade-card"
-            >
-
-                <span class="grade-name">
-                    {{ grade.name }}
+                <span class="grade-card-main">
+                    <span class="grade-name">{{ grade.name }}</span>
+                    <span class="grade-card-caption">Témata a materiály</span>
                 </span>
 
-                <span class="arrow">
-                    →
-                </span>
-
+                <span class="arrow">→</span>
             </a>
-
         {% empty %}
-
-            <p>
-                Zatím nebyly přidány žádné ročníky.
-            </p>
-
+            <p>Zatím nebyly přidány žádné ročníky.</p>
         {% endfor %}
+    </div>
+</section>
 
+<section class="about-panel" id="o-projektu">
+    <div class="about-label">
+        <span class="about-dot"></span>
+        O projektu
     </div>
 
+    <div class="about-content">
+        <h2>Jedno místo pro středoškolskou matematiku.</h2>
+
+        <p>
+            Mathera vzniká jako přehledná sbírka materiálů pro výuku a studium matematiky.
+            Cílem není množství obsahu za každou cenu, ale srozumitelnost, dobrá struktura
+            a materiály, které se dají skutečně používat.
+        </p>
+
+        <a href="{% url 'materials:search' %}" class="text-link">
+            Projít všechny materiály <span>→</span>
+        </a>
+    </div>
 </section>
 
 {% endblock %}

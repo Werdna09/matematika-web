@@ -3,20 +3,20 @@
    ========================================================= */
 
 :root {
-    --background: #f6f7f9;
+    --background: #f5f7f5;
     --surface: #ffffff;
-    --surface-hover: #fafafa;
+    --surface-hover: #f8faf8;
 
-    --text: #17181a;
-    --muted: #6d7178;
-    --muted-light: #969ba3;
+    --text: #18201f;
+    --muted: #66706e;
+    --muted-light: #949d9a;
 
-    --border: #e2e4e8;
-    --border-hover: #c8ccd2;
+    --border: #dfe5e2;
+    --border-hover: #c4d0cc;
 
-    --accent: #2457d6;
-    --accent-hover: #1b46b5;
-    --accent-soft: #eef3ff;
+    --accent: #285c63;
+    --accent-hover: #1f4a50;
+    --accent-soft: #eaf3f2;
 
     --danger: #c63737;
 
@@ -121,7 +121,7 @@ img {
 
 
 .header-content {
-    min-height: 68px;
+    min-height: 72px;
 
     display: flex;
     align-items: center;
@@ -134,8 +134,8 @@ img {
 .site-title {
     flex-shrink: 0;
 
-    font-size: 1.2rem;
-    font-weight: 750;
+    font-size: 1.08rem;
+    font-weight: 720;
 
     letter-spacing: -0.02em;
 
@@ -219,7 +219,7 @@ img {
     border-color: var(--accent);
 
     box-shadow:
-        0 0 0 3px rgba(36, 87, 214, 0.09);
+        0 0 0 3px rgba(40, 92, 99, 0.10);
 }
 
 
@@ -819,7 +819,7 @@ section {
     border-color: var(--accent);
 
     box-shadow:
-        0 0 0 3px rgba(36, 87, 214, 0.09);
+        0 0 0 3px rgba(40, 92, 99, 0.10);
 }
 
 
@@ -1177,4 +1177,614 @@ section {
     overflow-x: auto;
 
     margin: 1.5em 0;
+}
+
+/* =========================================================
+   MATHERA — IDENTITA / HOMEPAGE
+   ========================================================= */
+
+.site-main {
+    min-height: calc(100vh - 180px);
+}
+
+.site-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.site-mark {
+    width: 34px;
+    height: 34px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    background: var(--text);
+    color: #ffffff;
+
+    border-radius: 9px;
+
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 1.08rem;
+    font-weight: 400;
+    line-height: 1;
+}
+
+.main-nav a {
+    position: relative;
+}
+
+.main-nav a::after {
+    content: "";
+
+    position: absolute;
+    left: 0;
+    right: 100%;
+    bottom: -7px;
+
+    height: 1px;
+
+    background: var(--accent);
+
+    transition: right var(--transition);
+}
+
+.main-nav a:hover::after {
+    right: 0;
+}
+
+.home-hero {
+    position: relative;
+
+    min-height: 610px;
+    margin-bottom: 92px;
+    padding: 86px 0 74px;
+
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(360px, 0.92fr);
+    align-items: center;
+    gap: 78px;
+}
+
+.home-hero::before {
+    content: "";
+
+    position: absolute;
+    z-index: -1;
+    top: 28px;
+    right: -80px;
+
+    width: 530px;
+    height: 530px;
+
+    background:
+        radial-gradient(circle at center, rgba(40, 92, 99, 0.075), transparent 67%);
+
+    pointer-events: none;
+}
+
+.hero-copy {
+    max-width: 690px;
+}
+
+.hero-copy h1 {
+    margin: 0;
+
+    font-size: clamp(3.8rem, 7.3vw, 6.9rem);
+    font-weight: 710;
+
+    line-height: 0.93;
+    letter-spacing: -0.064em;
+}
+
+.hero-accent {
+    color: var(--accent);
+}
+
+.hero-copy .hero-text {
+    max-width: 610px;
+
+    margin-top: 28px;
+
+    font-size: 1.12rem;
+    line-height: 1.75;
+}
+
+.hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    margin-top: 32px;
+}
+
+.hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+
+    margin-top: 34px;
+
+    color: var(--muted-light);
+
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.hero-meta span {
+    position: relative;
+}
+
+.hero-meta span:not(:last-child)::after {
+    content: "·";
+
+    position: absolute;
+    right: -11px;
+
+    color: var(--border-hover);
+}
+
+.math-board {
+    position: relative;
+    overflow: hidden;
+
+    min-height: 440px;
+    padding: 22px;
+
+    background:
+        linear-gradient(rgba(40, 92, 99, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(40, 92, 99, 0.045) 1px, transparent 1px),
+        var(--surface);
+    background-size: 28px 28px;
+
+    border: 1px solid var(--border);
+    border-radius: 22px;
+
+    box-shadow:
+        0 2px 4px rgba(26, 40, 38, 0.025),
+        0 22px 60px rgba(26, 40, 38, 0.07);
+}
+
+.math-board::after {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    background: linear-gradient(145deg, transparent 35%, rgba(40, 92, 99, 0.035));
+
+    pointer-events: none;
+}
+
+.math-board-topline {
+    position: relative;
+    z-index: 1;
+
+    display: flex;
+    justify-content: space-between;
+
+    color: var(--muted-light);
+
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.math-graph {
+    position: relative;
+    z-index: 1;
+
+    margin: 28px 0 6px;
+}
+
+.math-graph svg {
+    width: 100%;
+    height: auto;
+}
+
+.graph-grid line {
+    stroke: #dbe4e1;
+    stroke-width: 1;
+}
+
+.graph-axes line {
+    stroke: #899693;
+    stroke-width: 1.2;
+}
+
+.graph-curve {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 3;
+    stroke-linecap: round;
+}
+
+.graph-point {
+    fill: var(--accent);
+}
+
+.math-formula {
+    position: relative;
+    z-index: 1;
+
+    color: var(--text);
+}
+
+.math-formula-main {
+    padding: 14px 16px;
+
+    background: rgba(255, 255, 255, 0.82);
+
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    font-size: 1rem;
+}
+
+.math-formula-row {
+    position: relative;
+    z-index: 1;
+
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+
+    margin-top: 12px;
+
+    color: var(--muted);
+
+    font-size: 0.82rem;
+}
+
+.home-section {
+    margin-bottom: 96px;
+}
+
+.section-intro {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(300px, 0.72fr);
+    justify-content: space-between;
+    align-items: end;
+    gap: 72px;
+
+    margin-bottom: 30px;
+}
+
+.section-intro h2,
+.about-content h2 {
+    margin: 0;
+
+    font-size: clamp(2rem, 4vw, 3.15rem);
+    font-weight: 690;
+
+    line-height: 1.05;
+    letter-spacing: -0.045em;
+}
+
+.section-intro > p {
+    max-width: 520px;
+    margin: 0;
+
+    color: var(--muted);
+
+    font-size: 0.98rem;
+    line-height: 1.75;
+}
+
+.section-intro-compact {
+    margin-bottom: 24px;
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.feature-card {
+    min-height: 230px;
+    padding: 24px;
+
+    display: flex;
+    flex-direction: column;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    box-shadow: var(--shadow-sm);
+}
+
+.feature-symbol {
+    width: fit-content;
+
+    margin-bottom: auto;
+    padding: 4px 7px;
+
+    color: var(--accent);
+    background: var(--accent-soft);
+
+    border-radius: 6px;
+
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+.feature-card h3 {
+    margin: 32px 0 8px;
+
+    font-size: 1.14rem;
+    font-weight: 670;
+    letter-spacing: -0.02em;
+}
+
+.feature-card p {
+    margin: 0;
+
+    color: var(--muted);
+
+    font-size: 0.91rem;
+    line-height: 1.65;
+}
+
+.grade-card {
+    position: relative;
+    overflow: hidden;
+
+    min-height: 148px;
+}
+
+.grade-card::before {
+    content: "";
+
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+
+    width: 3px;
+
+    background: var(--accent);
+
+    transform: scaleY(0);
+    transform-origin: bottom;
+
+    transition: transform var(--transition);
+}
+
+.grade-card:hover::before {
+    transform: scaleY(1);
+}
+
+.grade-card-index {
+    align-self: flex-start;
+
+    color: var(--muted-light);
+
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.7rem;
+}
+
+.grade-card-main {
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.grade-card-caption {
+    color: var(--muted-light);
+
+    font-size: 0.78rem;
+}
+
+.about-panel {
+    margin-bottom: 40px;
+    padding: 44px;
+
+    display: grid;
+    grid-template-columns: 0.38fr 1fr;
+    gap: 70px;
+
+    background: #1d2927;
+    color: #f7faf9;
+
+    border-radius: 22px;
+}
+
+.about-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    color: #aab8b4;
+
+    font-size: 0.78rem;
+    font-weight: 650;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.about-dot {
+    width: 7px;
+    height: 7px;
+
+    background: #8bc0b6;
+
+    border-radius: 999px;
+}
+
+.about-content {
+    max-width: 700px;
+}
+
+.about-content h2 {
+    color: #ffffff;
+}
+
+.about-content p {
+    max-width: 650px;
+
+    margin: 22px 0 0;
+
+    color: #b8c4c1;
+
+    line-height: 1.75;
+}
+
+.text-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+
+    margin-top: 28px;
+
+    color: #ffffff;
+
+    font-size: 0.92rem;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.text-link span {
+    transition: transform var(--transition);
+}
+
+.text-link:hover span {
+    transform: translateX(4px);
+}
+
+.footer-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.footer-content > div {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+}
+
+.footer-content strong {
+    color: var(--text);
+
+    font-size: 0.92rem;
+}
+
+.footer-note {
+    white-space: nowrap;
+}
+
+@media (max-width: 980px) {
+    .home-hero {
+        grid-template-columns: 1fr;
+        gap: 46px;
+
+        padding-top: 68px;
+    }
+
+    .math-board {
+        max-width: 680px;
+        min-height: auto;
+    }
+
+    .feature-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .feature-card {
+        min-height: 175px;
+    }
+}
+
+@media (max-width: 850px) {
+    .main-nav {
+        display: none !important;
+    }
+
+    .section-intro {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .about-panel {
+        grid-template-columns: 1fr;
+        gap: 28px;
+    }
+}
+
+@media (max-width: 650px) {
+    .home-hero {
+        min-height: auto;
+        margin-bottom: 64px;
+        padding: 58px 0 50px;
+    }
+
+    .home-hero::before {
+        display: none;
+    }
+
+    .hero-copy h1 {
+        font-size: clamp(3.35rem, 17vw, 5.1rem);
+    }
+
+    .hero-actions {
+        flex-direction: column;
+    }
+
+    .hero-actions .button {
+        width: 100%;
+    }
+
+    .hero-meta {
+        gap: 7px 16px;
+    }
+
+    .math-board {
+        padding: 16px;
+        border-radius: 16px;
+    }
+
+    .math-formula-row {
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    .home-section {
+        margin-bottom: 68px;
+    }
+
+    .feature-card {
+        min-height: 165px;
+        padding: 20px;
+    }
+
+    .grade-card {
+        min-height: 112px;
+    }
+
+    .grade-card-index {
+        display: none;
+    }
+
+    .about-panel {
+        padding: 28px 22px;
+        border-radius: 16px;
+    }
+
+    .footer-content,
+    .footer-content > div {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 7px;
+    }
 }
