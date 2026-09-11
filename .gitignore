@@ -9,6 +9,7 @@ __pycache__/
 db.sqlite3
 media/
 staticfiles/
+*.log
 
 # Environment variables and secrets
 .env
