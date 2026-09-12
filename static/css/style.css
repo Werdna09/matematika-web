@@ -1948,6 +1948,237 @@ section {
     color: var(--accent);
 }
 
+/* =========================================================
+   MATHERA EXERCISE
+   ========================================================= */
+
+.reader-content {
+    counter-reset: mathera-exercise;
+}
+
+
+.mathera-exercise {
+    counter-increment: mathera-exercise;
+
+    margin: 2.4rem 0;
+
+    padding: 22px 24px;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius);
+
+    box-shadow: var(--shadow-sm);
+}
+
+
+.mathera-exercise-title {
+    margin-bottom: 18px;
+
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+
+    gap: 0.4em;
+
+    color: var(--text);
+
+    font-weight: 650;
+
+    letter-spacing: -0.015em;
+}
+
+
+.mathera-exercise-title::before {
+    content:
+        "Úloha "
+        var(--chapter-number)
+        "."
+        counter(mathera-exercise)
+        ".";
+
+    flex-shrink: 0;
+
+    color: var(--accent);
+
+    font-size: 0.78rem;
+    font-weight: 750;
+
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+
+.mathera-exercise-title > * {
+    margin: 0;
+}
+
+
+.mathera-exercise-body > :first-child {
+    margin-top: 0;
+}
+
+
+.mathera-exercise-body > :last-child {
+    margin-bottom: 0;
+}
+
+
+/* =========================================================
+   MATHERA TASKS
+   ========================================================= */
+
+.mathera-tasks {
+    margin: 1.35rem 0 0;
+}
+
+
+.mathera-tasks > ol {
+    margin: 0;
+    padding: 0;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            var(--task-columns, 1),
+            minmax(0, 1fr)
+        );
+
+    gap:
+        1.35rem
+        2rem;
+
+    list-style: none;
+
+    counter-reset: mathera-task;
+}
+
+
+.mathera-tasks > ol > li {
+    min-width: 0;
+
+    position: relative;
+
+    padding-left: 1.8rem;
+
+    counter-increment: mathera-task;
+}
+
+
+.mathera-tasks > ol > li::before {
+    content:
+        counter(
+            mathera-task,
+            lower-alpha
+        )
+        ")";
+
+    position: absolute;
+
+    left: 0;
+    top: 0;
+
+    color: var(--muted);
+
+    font-weight: 600;
+}
+
+
+.mathera-tasks > ol > li > :first-child {
+    margin-top: 0;
+}
+
+
+.mathera-tasks > ol > li > :last-child {
+    margin-bottom: 0;
+}
+
+
+.mathera-tasks mjx-container {
+    max-width: 100%;
+}
+
+
+/* =========================================================
+   TASKS — TABLET
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .mathera-tasks > ol {
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+    }
+
+
+    .mathera-tasks[
+        style*="--task-columns: 1"
+    ] > ol {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+/* =========================================================
+   TASKS — MOBIL
+   ========================================================= */
+
+@media (max-width: 650px) {
+
+    .mathera-exercise {
+        padding: 18px;
+    }
+
+
+    .mathera-tasks > ol {
+        grid-template-columns: 1fr;
+
+        gap: 1rem;
+    }
+
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .mathera-tasks > ol {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+
+    .mathera-tasks[style*="--task-columns: 1"] > ol {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+/* =========================================================
+   MOBIL
+   ========================================================= */
+
+@media (max-width: 650px) {
+
+    .mathera-tasks > ol {
+        grid-template-columns: 1fr;
+
+        gap: 1rem;
+    }
+
+}
+
 
 /* =========================================================
    MOBILNÍ OBSAH
