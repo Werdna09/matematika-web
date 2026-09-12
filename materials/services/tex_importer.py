@@ -241,7 +241,7 @@ def import_material_tex(material, tex_file=None):
                     processed_tex.name,
                     "--from=latex",
                     "--to=html5",
-                    "--math-method=mathjax",
+                    "--mathjax",
                     "--wrap=none",
                     "--lua-filter",
                     str(LUA_FILTER),

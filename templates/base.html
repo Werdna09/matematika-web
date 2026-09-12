@@ -12,6 +12,11 @@
 
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
+    <link rel="icon" type="image/x-icon" href="{% static 'favicon/favicon.ico' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon/favicon-16x16.png' %}">
+    <link rel="apple-touch-icon" href="{% static 'favicon/apple-touch-icon.png' %}">
+
     <script>
         window.MathJax = {
             tex: {
@@ -43,13 +48,8 @@
                 </nav>
 
                 <form action="{% url 'materials:search' %}" method="get" class="search-form">
-                    <input
-                        type="search"
-                        name="q"
-                        value="{{ request.GET.q|default:'' }}"
-                        placeholder="Hledat…"
-                        aria-label="Hledat materiál"
-                    >
+                    <input type="search" name="q" value="{{ request.GET.q|default:'' }}" placeholder="Hledat…"
+                        aria-label="Hledat materiál">
                     <button type="submit">Hledat</button>
                 </form>
 
@@ -73,4 +73,5 @@
     </footer>
 
 </body>
+
 </html>
