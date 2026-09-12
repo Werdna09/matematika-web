@@ -12,6 +12,11 @@ urlpatterns = [
         name="grade_detail",
     ),
     path(
+        "material/<slug:material_slug>/<slug:section_slug>/",
+        views.material_section_detail,
+        name="material_section_detail",
+    ),
+    path(
         "material/<slug:slug>/",
         views.material_detail,
         name="material_detail",
@@ -25,5 +30,5 @@ urlpatterns = [
         "rocnik/<slug:grade_slug>/tema/<slug:topic_slug>/",
         views.topic_detail,
         name="topic_detail",
-),
+    ),
 ]

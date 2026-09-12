@@ -120,3 +120,51 @@ class Material(models.Model):
 
     def __str__(self):
         return self.title
+
+class MaterialSection(models.Model):
+    material = models.ForeignKey(
+        Material,
+        on_delete=models.CASCADE,
+        related_name="sections",
+    )
+
+    title = models.CharField(
+        max_length=200,
+    )
+
+    slug = models.SlugField(
+        max_length=200,
+    )
+
+    html_content = models.TextField(
+        blank=True,
+        help_text="HTML obsah kapitoly vygenerovaný z LaTeXu.",
+    )
+
+    order = models.PositiveIntegerField(
+        default=0,
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+    )
+
+    updated_at = models.DateTimeField(
+        auto_now=True,
+    )
+
+    class Meta:
+        ordering = ["order", "title"]
+
+        constraints = [
+            models.UniqueConstraint(
+                fields=["material", "slug"],
+                name="unique_material_section_slug",
+            ),
+        ]
+
+        verbose_name = "kapitola materiálu"
+        verbose_name_plural = "kapitoly materiálů"
+
+    def __str__(self):
+        return f"{self.material.title} — {self.title}"

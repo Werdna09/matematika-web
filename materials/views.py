@@ -1,7 +1,7 @@
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, render
 
-from .models import Grade, Material, MaterialType, Topic
+from .models import Grade, Material, MaterialSection, MaterialType, Topic
 
 
 def grade_detail(request, slug):
@@ -60,9 +60,26 @@ def topic_detail(request, grade_slug, topic_slug):
 
 def material_detail(request, slug):
     material = get_object_or_404(
-        Material,
+        Material.objects
+        .select_related(
+            "topic",
+            "material_type",
+        )
+        .prefetch_related(
+            "grades",
+            "tags",
+            "sections",
+        ),
         slug=slug,
         status=Material.Status.PUBLISHED,
+    )
+
+    sections = list(material.sections.all())
+
+    first_section = (
+        sections[0]
+        if sections
+        else None
     )
 
     return render(
@@ -70,6 +87,56 @@ def material_detail(request, slug):
         "materials/material_detail.html",
         {
             "material": material,
+            "sections": sections,
+            "first_section": first_section,
+        },
+    )
+
+def material_section_detail(request, material_slug, section_slug):
+    material = get_object_or_404(
+        Material.objects
+        .select_related(
+            "topic",
+            "material_type",
+        )
+        .prefetch_related(
+            "grades",
+            "sections",
+        ),
+        slug=material_slug,
+        status=Material.Status.PUBLISHED,
+    )
+
+    section = get_object_or_404(
+        MaterialSection,
+        material=material,
+        slug=section_slug,
+    )
+
+    sections = list(material.sections.all())
+
+    current_index = sections.index(section)
+
+    previous_section = (
+        sections[current_index - 1]
+        if current_index > 0
+        else None
+    )
+
+    next_section = (
+        sections[current_index + 1]
+        if current_index < len(sections) - 1
+        else None
+    )
+
+    return render(
+        request,
+        "materials/material_section_detail.html",
+        {
+            "material": material,
+            "section": section,
+            "previous_section": previous_section,
+            "next_section": next_section,
         },
     )
 

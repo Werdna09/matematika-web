@@ -2,7 +2,7 @@
 
 
 {% block title %}
-{{ material.title }} | Matematika
+{{ material.title }} | Mathera
 {% endblock %}
 
 
@@ -20,21 +20,21 @@
 
         {% with grade=material.grades.all.0 %}
 
-        {% if grade %}
+            {% if grade %}
 
-        <a href="{% url 'materials:grade_detail' grade.slug %}">
-            {{ grade.name }}
-        </a>
+                <a href="{% url 'materials:grade_detail' grade.slug %}">
+                    {{ grade.name }}
+                </a>
 
-        <span>›</span>
+                <span>›</span>
 
-        <a href="{% url 'materials:topic_detail' grade.slug material.topic.slug %}">
-            {{ material.topic.name }}
-        </a>
+                <a href="{% url 'materials:topic_detail' grade.slug material.topic.slug %}">
+                    {{ material.topic.name }}
+                </a>
 
-        <span>›</span>
+                <span>›</span>
 
-        {% endif %}
+            {% endif %}
 
         {% endwith %}
 
@@ -43,6 +43,7 @@
         </span>
 
     </nav>
+
 
     <p class="eyebrow">
         {{ material.material_type.name }}
@@ -53,11 +54,15 @@
     </h1>
 
     <p class="material-meta">
+
         {{ material.topic.name }}
+
         ·
+
         {% for grade in material.grades.all %}
-        {{ grade.name }}{% if not forloop.last %}, {% endif %}
+            {{ grade.name }}{% if not forloop.last %}, {% endif %}
         {% endfor %}
+
     </p>
 
 </div>
@@ -67,33 +72,149 @@
 
     {% if material.description %}
 
-    <div class="material-description">
-        <p>
-            {{ material.description }}
-        </p>
-    </div>
+        <div class="material-description">
+
+            <p>
+                {{ material.description }}
+            </p>
+
+        </div>
 
     {% endif %}
 
-    {% if material.html_content %}
 
-    <article class="online-content">
+    {% if sections %}
 
-        {{ material.html_content|safe }}
+        <div class="book-intro">
 
-    </article>
+            <div>
+
+                <p class="eyebrow">
+                    Online učebnice
+                </p>
+
+                <h2>
+                    Číst online
+                </h2>
+
+                <p>
+                    Materiál je rozdělen do jednotlivých kapitol
+                    pro pohodlné čtení přímo na webu.
+                </p>
+
+            </div>
+
+
+            {% if first_section %}
+
+                <a
+                    href="{% url 'materials:material_section_detail' material.slug first_section.slug %}"
+                    class="button"
+                >
+                    Začít číst →
+                </a>
+
+            {% endif %}
+
+        </div>
+
+
+        <div class="book-contents">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <p class="eyebrow">
+                        Obsah
+                    </p>
+
+                    <h2>
+                        Kapitoly
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="chapter-list">
+
+                {% for section in sections %}
+
+                    <a
+                        href="{% url 'materials:material_section_detail' material.slug section.slug %}"
+                        class="chapter-item"
+                    >
+
+                        <span class="chapter-number">
+                            {{ forloop.counter|stringformat:"02d" }}
+                        </span>
+
+
+                        <span class="chapter-title">
+                            {{ section.title }}
+                        </span>
+
+
+                        <span class="chapter-arrow">
+                            →
+                        </span>
+
+                    </a>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    {% elif material.html_content %}
+
+        <article class="online-content">
+
+            {{ material.html_content|safe }}
+
+        </article>
 
     {% endif %}
 
-    <div class="material-actions">
 
-        <a href="{{ material.pdf_file.url }}" target="_blank" rel="noopener" class="button">
-            Otevřít PDF
-        </a>
+    <div class="material-downloads">
 
-        <a href="{{ material.pdf_file.url }}" download class="button button-secondary">
-            Stáhnout PDF
-        </a>
+        <div>
+
+            <p class="eyebrow">
+                PDF
+            </p>
+
+            <h2>
+                Verze pro tisk
+            </h2>
+
+        </div>
+
+
+        <div class="material-actions">
+
+            <a
+                href="{{ material.pdf_file.url }}"
+                target="_blank"
+                rel="noopener"
+                class="button button-secondary"
+            >
+                Otevřít PDF
+            </a>
+
+            <a
+                href="{{ material.pdf_file.url }}"
+                download
+                class="button button-secondary"
+            >
+                Stáhnout PDF
+            </a>
+
+        </div>
 
     </div>
 

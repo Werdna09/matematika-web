@@ -1,7 +1,14 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
 
-from .models import Grade, Material, MaterialType, Tag, Topic
+from .models import (
+    Grade,
+    Material,
+    MaterialSection,
+    MaterialType,
+    Tag,
+    Topic,
+)
+
 
 @admin.register(Grade)
 class GradeAdmin(admin.ModelAdmin):
@@ -32,6 +39,26 @@ class TagAdmin(admin.ModelAdmin):
     list_display = ("name", "slug")
     prepopulated_fields = {"slug": ("name",)}
     search_fields = ("name",)
+
+
+class MaterialSectionInline(admin.StackedInline):
+    model = MaterialSection
+    extra = 0
+
+    fields = (
+        "title",
+        "slug",
+        "order",
+        "html_content",
+    )
+
+    prepopulated_fields = {
+        "slug": ("title",),
+    }
+
+    ordering = (
+        "order",
+    )
 
 
 @admin.register(Material)
@@ -69,6 +96,42 @@ class MaterialAdmin(admin.ModelAdmin):
 
     list_editable = (
         "status",
+        "order",
+    )
+
+    readonly_fields = (
+        "created_at",
+        "updated_at",
+    )
+
+    inlines = (
+        MaterialSectionInline,
+    )
+
+
+@admin.register(MaterialSection)
+class MaterialSectionAdmin(admin.ModelAdmin):
+    list_display = (
+        "title",
+        "material",
+        "order",
+        "updated_at",
+    )
+
+    list_filter = (
+        "material",
+    )
+
+    search_fields = (
+        "title",
+        "material__title",
+    )
+
+    prepopulated_fields = {
+        "slug": ("title",),
+    }
+
+    list_editable = (
         "order",
     )
 
