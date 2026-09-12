@@ -97,6 +97,13 @@ class Material(models.Model):
         validators=[FileExtensionValidator(["pdf"])],
     )
 
+    source_tex = models.FileField(
+       upload_to="sources/%Y/%m/",
+        validators=[FileExtensionValidator(["tex"])],
+        blank=True,
+        help_text="Zdrojový LaTeX soubor materiálu.",
+    )    
+
     html_content = models.TextField(
         blank=True,
         help_text="HTML obsah vygenerovaný z LaTeXu.",

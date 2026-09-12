@@ -1754,13 +1754,25 @@ section {
     min-width: 0;
 
     padding-top: 32px;
+
+    align-self: stretch;
 }
 
 
 .reader-sidebar-inner {
     position: sticky;
-
     top: 96px;
+
+    max-height: calc(100vh - 120px);
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    scrollbar-width: none;
+}
+
+.reader-sidebar-inner::-webkit-scrollbar {
+    display: none;
 }
 
 
@@ -1832,11 +1844,6 @@ section {
     color: var(--muted-light);
 
     font-size: 0.82rem;
-}
-
-
-.reader-toc-link.is-active {
-    transform: translateX(2px);
 }
 
 
