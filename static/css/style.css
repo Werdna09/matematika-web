@@ -2101,6 +2101,131 @@ section {
     max-width: 100%;
 }
 
+/* =========================================================
+   MATHERA CONTENT BOXY
+   ========================================================= */
+
+.mathera-box {
+    --box-accent: var(--accent);
+    --box-background: var(--accent-soft);
+
+    margin: 2rem 0;
+
+    padding: 20px 22px;
+
+    background: var(--box-background);
+
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--box-accent);
+    border-radius: var(--radius);
+
+    box-shadow: var(--shadow-sm);
+}
+
+
+.mathera-box-title {
+    margin-bottom: 10px;
+
+    color: var(--box-accent);
+
+    font-size: 0.76rem;
+    font-weight: 750;
+
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+}
+
+
+.mathera-box-body > :first-child {
+    margin-top: 0;
+}
+
+
+.mathera-box-body > :last-child {
+    margin-bottom: 0;
+}
+
+
+/* ---------------------------------------------------------
+   Definice
+   --------------------------------------------------------- */
+
+.mathera-box-definition {
+    --box-accent: var(--accent);
+    --box-background: var(--accent-soft);
+}
+
+
+/* ---------------------------------------------------------
+   Příklad
+   --------------------------------------------------------- */
+
+.mathera-box-example {
+    --box-accent: #4f795f;
+    --box-background: #f2f7f3;
+}
+
+
+/* ---------------------------------------------------------
+   Poznámka
+   --------------------------------------------------------- */
+
+.mathera-box-note {
+    --box-accent: #9a7025;
+    --box-background: #fbf7ec;
+}
+
+
+/* ---------------------------------------------------------
+   Řešení
+   --------------------------------------------------------- */
+
+.mathera-box-solution {
+    --box-accent: #737983;
+    --box-background: #f3f4f5;
+}
+
+
+/* ---------------------------------------------------------
+   Historie
+   --------------------------------------------------------- */
+
+.mathera-box-historical {
+    --box-accent: #687c61;
+    --box-background: #f3f6f1;
+}
+
+/* =========================================================
+   MATHERA IMPORTANT
+   ========================================================= */
+
+.mathera-important {
+    color: var(--text);
+    font-weight: 700;
+
+    background:
+        linear-gradient(
+            transparent 62%,
+            var(--accent-soft) 62%
+        );
+
+    text-decoration: none;
+}
+
+/* =========================================================
+   BOXY — MOBIL
+   ========================================================= */
+
+@media (max-width: 650px) {
+
+    .mathera-box {
+        margin: 1.6rem 0;
+
+        padding: 17px 18px;
+    }
+
+}
+
 
 /* =========================================================
    TASKS — TABLET

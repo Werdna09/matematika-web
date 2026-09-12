@@ -32,6 +32,53 @@ TASKS_RE = re.compile(
     flags=re.DOTALL,
 )
 
+IMPORTANT_RE = re.compile(
+    r"\\important\{([^{}]*)\}"
+)
+
+
+# =========================================================
+# BOXY
+# =========================================================
+
+BOX_ENVIRONMENTS = {
+    "definitionbox": "definition",
+    "examplebox": "example",
+    "notebox": "note",
+    "historicalbox": "historical",
+    "solutionbox": "solution",
+}
+
+
+def _replace_box(source, environment, box_type):
+    pattern = re.compile(
+        rf"\\begin\{{{re.escape(environment)}\}}"
+        r"(.*?)"
+        rf"\\end\{{{re.escape(environment)}\}}",
+        flags=re.DOTALL,
+    )
+
+    def replacer(match):
+        body = match.group(1).strip()
+
+        return (
+            "\n"
+            "\\begin{quote}\n"
+            "\n"
+            f"MATHERABOXSTART{box_type}\n"
+            "\n"
+            "MATHERABOXBODY\n"
+            "\n"
+            f"{body}\n"
+            "\n"
+            "\\end{quote}\n"
+        )
+
+    return pattern.sub(
+        replacer,
+        source,
+    )
+
 
 # =========================================================
 # EXERCISE
@@ -74,7 +121,6 @@ def _replace_exercise(match):
 # =========================================================
 
 def _replace_exercise_block(match):
-    # Ve tvém .sty má exerciseblock implicitně 2 sloupce.
     columns = match.group(1) or "2"
 
     title = match.group(2)
@@ -89,6 +135,14 @@ def _replace_exercise_block(match):
     return _wrap_exercise(
         title,
         tasks,
+    )
+
+def _replace_important(match):
+    content = match.group(1).strip()
+
+    return (
+        "\\href{mathera-important://inline}"
+        f"{{{content}}}"
     )
 
 
@@ -120,8 +174,6 @@ def _replace_tasks(match):
     items = []
 
     for index, task in enumerate(tasks):
-        # Marker uchová informaci o počtu sloupců.
-        # mathera.lua jej později odstraní.
         if index == 0:
             task = (
                 f"MATHERATASKSCOLS{columns} "
@@ -146,11 +198,8 @@ def _replace_tasks(match):
 # =========================================================
 
 def preprocess_tex(source):
-    # Pořadí je důležité.
-    #
-    # exerciseblock nejprve vytvoří explicitní tasks,
-    # které následně zpracuje _replace_tasks().
-
+    # Exerciseblock musíme převést dřív,
+    # protože z něj vznikne explicitní tasks.
     source = EXERCISE_BLOCK_RE.sub(
         _replace_exercise_block,
         source,
@@ -161,8 +210,23 @@ def preprocess_tex(source):
         source,
     )
 
+    # Převod vlastních boxů.
+    for environment, box_type in BOX_ENVIRONMENTS.items():
+        source = _replace_box(
+            source,
+            environment,
+            box_type,
+        )
+
+    # Tasks až nakonec, protože je mohou vytvořit
+    # předchozí transformace.
     source = TASKS_RE.sub(
         _replace_tasks,
+        source,
+    )
+
+    source = IMPORTANT_RE.sub(
+        _replace_important,
         source,
     )
 
