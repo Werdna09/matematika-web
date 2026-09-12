@@ -2733,3 +2733,39 @@ section {
         gap: 7px;
     }
 }
+
+
+/* =========================================================
+   MATHERA READER — TIKZ / PGFPLOTS OBRÁZKY
+   ========================================================= */
+
+/*
+   TikZ a axisgraph se při importu LaTeXu převádějí na SVG do:
+   /media/generated/tikz/<material-slug>/...
+
+   Necháváme SVG v jeho přirozené velikosti, ale nikdy nesmí přetéct
+   přes šířku readeru. Menší geometrické náčrtky se proto zbytečně
+   neroztahují, zatímco velké grafy se na mobilu plynule zmenší.
+*/
+.online-content img[src*="/generated/tikz/"] {
+    display: block;
+
+    max-width: 100%;
+    height: auto;
+
+    margin: 1.8rem auto;
+}
+
+
+/* Pandoc převádí LaTeXové prostředí center na <div class="center">. */
+.online-content .center {
+    text-align: center;
+}
+
+
+@media (max-width: 650px) {
+    .online-content img[src*="/generated/tikz/"] {
+        margin-top: 1.4rem;
+        margin-bottom: 1.4rem;
+    }
+}

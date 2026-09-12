@@ -10,6 +10,7 @@ from django.utils.text import slugify
 
 from materials.models import MaterialSection
 from materials.services.tex_preprocessor import preprocess_tex
+from materials.services.tikz_renderer import TikzRenderError, render_tikz_figures
 
 
 class TexImportError(Exception):
@@ -200,6 +201,28 @@ def import_material_tex(material, tex_file=None):
     except OSError as error:
         raise TexImportError(
             f"Zdrojový LaTeX se nepodařilo načíst: {error}"
+        ) from error
+
+
+    # =====================================================
+    # TIKZ / PGFPLOTS → SVG
+    # =====================================================
+    #
+    # TikZ a vlastní axisgraph nevkládáme do Pandocu přímo.
+    # Nejprve je vyrenderujeme jako SVG do MEDIA_ROOT a v LaTeXu
+    # je nahradíme za \includegraphics s veřejnou MEDIA_URL.
+
+    try:
+        source = render_tikz_figures(
+            source,
+            material_slug=material.slug,
+            source_dir=tex_file.parent,
+        )
+
+    except TikzRenderError as error:
+        raise TexImportError(
+            "TikZ/PGFPlots obrázky se nepodařilo zpracovat:\n"
+            + str(error)
         ) from error
 
 
