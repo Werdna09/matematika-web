@@ -36,6 +36,9 @@ IMPORTANT_RE = re.compile(
     r"\\important\{([^{}]*)\}"
 )
 
+NEWCOLUMN_RE = re.compile(
+    r"(?m)^[ \t]*\\newcolumntype[^\n]*(?:\n|$)"
+)
 
 # =========================================================
 # BOXY
@@ -209,6 +212,8 @@ def preprocess_tex(source):
         _replace_exercise,
         source,
     )
+
+    source = NEWCOLUMN_RE.sub("", source)
 
     # Převod vlastních boxů.
     for environment, box_type in BOX_ENVIRONMENTS.items():
