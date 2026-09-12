@@ -23,6 +23,15 @@ FIGURE_ENV_RE = re.compile(
     flags=re.MULTILINE,
 )
 
+DOCUMENT_BEGIN_RE = re.compile(r"\\begin\{document\}")
+DOCUMENT_END_RE = re.compile(r"\\end\{document\}")
+
+TDPLOT_MAIN_COORDS_RE = re.compile(
+    r"\\tdplotsetmaincoords\s*"
+    r"\{[^{}]*\}\s*"
+    r"\{[^{}]*\}"
+)
+
 
 # Obrázky jednoho materiálu kompilujeme v jednom pdflatex běhu. Balíček preview
 # vytvoří z každého tikzpicture samostatnou, těsně oříznutou stránku PDF.
@@ -42,6 +51,7 @@ LATEX_PREAMBLE = r"""
 
 \usepackage{tikz}
 \usepackage{tikz-3dplot}
+\usepackage{tkz-euclide}
 \usetikzlibrary{
     positioning,
     calc,
@@ -140,6 +150,51 @@ def _mask_latex_comments(source):
             index += 1
 
     return "".join(chars)
+
+
+def _document_body_bounds(masked_source):
+    r"""Vrátí rozsah skutečného obsahu mezi \begin{document} a \end{document}."""
+
+    begin_match = DOCUMENT_BEGIN_RE.search(masked_source)
+
+    if not begin_match:
+        return 0, len(masked_source)
+
+    end_match = DOCUMENT_END_RE.search(
+        masked_source,
+        begin_match.end(),
+    )
+
+    body_end = (
+        end_match.start()
+        if end_match
+        else len(masked_source)
+    )
+
+    return begin_match.end(), body_end
+
+
+def _figure_context(source, masked_source, body_start, figure_start):
+    """
+    Vrátí malé množství stavových příkazů, které TikZ obrázek potřebuje
+    z okolního dokumentu.
+
+    tikz-3dplot ukládá orientaci souřadnic mimo samotné tikzpicture pomocí
+    \tdplotsetmaincoords. Poslední nastavení před obrázkem proto přeneseme
+    i do samostatného renderovacího dokumentu.
+    """
+
+    prefix = masked_source[body_start:figure_start]
+    matches = list(TDPLOT_MAIN_COORDS_RE.finditer(prefix))
+
+    if not matches:
+        return ""
+
+    match = matches[-1]
+    absolute_start = body_start + match.start()
+    absolute_end = body_start + match.end()
+
+    return source[absolute_start:absolute_end].strip()
 
 
 def _figure_hash(snippet):
@@ -474,7 +529,9 @@ def render_tikz_figures(source, material_slug, source_dir):
         media_url += "/"
 
     masked_source = _mask_latex_comments(source)
-    matches = list(FIGURE_ENV_RE.finditer(masked_source))
+    body_start, body_end = _document_body_bounds(masked_source)
+    masked_body = masked_source[body_start:body_end]
+    matches = list(FIGURE_ENV_RE.finditer(masked_body))
 
     if not matches:
         return source
@@ -483,20 +540,33 @@ def render_tikz_figures(source, material_slug, source_dir):
     missing_by_hash = {}
 
     for figure_number, match in enumerate(matches, start=1):
-        snippet = source[
-            match.start():match.end()
-        ]
+        absolute_start = body_start + match.start()
+        absolute_end = body_start + match.end()
 
-        digest = _figure_hash(snippet)
+        snippet = source[absolute_start:absolute_end]
+        context = _figure_context(
+            source,
+            masked_source,
+            body_start,
+            absolute_start,
+        )
+
+        render_snippet = (
+            context + "\n" + snippet
+            if context
+            else snippet
+        )
+
+        digest = _figure_hash(render_snippet)
         filename = f"figure-{digest}.svg"
         destination = output_directory / filename
 
         item = {
             "figure_number": figure_number,
             "environment": match.group("environment"),
-            "start": match.start(),
-            "end": match.end(),
-            "snippet": snippet,
+            "start": absolute_start,
+            "end": absolute_end,
+            "snippet": render_snippet,
             "filename": filename,
             "destination": destination,
         }
