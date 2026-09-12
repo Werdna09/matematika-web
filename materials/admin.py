@@ -1,4 +1,6 @@
-from django.contrib import admin
+from urllib import request
+
+from django.contrib import admin, messages
 
 from .models import (
     Grade,
@@ -8,6 +10,7 @@ from .models import (
     Tag,
     Topic,
 )
+from .services.tex_importer import TexImportError, import_material_tex
 
 
 @admin.register(Grade)
@@ -107,6 +110,49 @@ class MaterialAdmin(admin.ModelAdmin):
     inlines = (
         MaterialSectionInline,
     )
+
+    def save_model(self, request, obj, form, change):
+        source_tex_changed = "source_tex" in form.changed_data
+
+        super().save_model(request, obj, form, change)
+
+        if not source_tex_changed or not obj.source_tex:
+            return
+
+        try:
+            import_material_tex(obj)
+
+        except TexImportError as exc:
+            self.message_user(
+                request,
+                (
+                    "Materiál byl uložen, ale import LaTeXu se nezdařil. "
+                    f"Původní online verze zůstala zachována. Chyba: {exc}"
+                ),
+                level=messages.ERROR,
+            )
+
+        except Exception as exc:
+            self.message_user(
+                request,
+                (
+                    "Materiál byl uložen, ale při importu LaTeXu nastala "
+                    f"neočekávaná chyba: {type(exc).__name__}: {exc}"
+                ),
+                level=messages.ERROR,
+            )
+
+        else:
+            section_count = obj.sections.count()
+
+            self.message_user(
+                request,
+                (
+                    f"LaTeX byl úspěšně importován. "
+                    f"Vytvořeno kapitol: {section_count}."
+                ),
+                level=messages.SUCCESS,
+            )
 
 
 @admin.register(MaterialSection)
