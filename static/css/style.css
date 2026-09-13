@@ -1883,6 +1883,65 @@ section {
     letter-spacing: -0.015em;
 }
 
+.reader-chapter-nav {
+    margin-bottom: 1.75rem;
+}
+
+.reader-sidebar-label {
+    margin-bottom: 0.9rem;
+
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+
+    color: #8b9693;
+}
+
+.reader-chapter-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.reader-chapter-link {
+    display: block;
+
+    padding: 0.55rem 0.8rem;
+
+    border-left: 2px solid transparent;
+
+    color: #7c8784;
+    text-decoration: none;
+
+    font-size: 0.95rem;
+    font-weight: 500;
+    line-height: 1.35;
+
+    transition:
+        color 0.15s ease,
+        border-color 0.15s ease,
+        background 0.15s ease;
+}
+
+.reader-chapter-link:hover {
+    color: #245f66;
+}
+
+.reader-chapter-link.is-active {
+    color: #245f66;
+    border-left-color: #245f66;
+
+    font-weight: 700;
+}
+
+.reader-sidebar-divider {
+    height: 1px;
+    margin: 1.3rem 0 1.5rem;
+
+    background: rgba(20, 45, 45, 0.09);
+}
+
 
 /* =========================================================
    PŘEDCHOZÍ / DALŠÍ
@@ -2100,6 +2159,75 @@ section {
 .mathera-tasks mjx-container {
     max-width: 100%;
 }
+
+/* =========================================================
+   MATHERA READER — TABULKY
+   ========================================================= */
+
+.online-content table {
+    width: auto;
+    max-width: 100%;
+
+    margin: 1.8rem auto;
+
+    border-collapse: collapse;
+    border-spacing: 0;
+
+    font-size: 1rem;
+
+    background: #ffffff;
+
+    border: 1px solid rgba(20, 45, 45, 0.14);
+    border-radius: 10px;
+
+    overflow: hidden;
+}
+
+
+.online-content th,
+.online-content td {
+    padding: 0.7rem 1rem;
+
+    border: 1px solid rgba(20, 45, 45, 0.12);
+
+    text-align: center;
+    vertical-align: middle;
+}
+
+
+.online-content th {
+    font-weight: 700;
+
+    background: rgba(38, 104, 112, 0.08);
+}
+
+
+.online-content tbody tr:nth-child(even) {
+    background: rgba(20, 45, 45, 0.025);
+}
+
+
+/* MathJax uvnitř tabulek nesmí buňky zbytečně roztahovat */
+.online-content table mjx-container {
+    margin: 0 !important;
+}
+
+
+
+/* Mobil */
+@media (max-width: 650px) {
+
+    .online-content table {
+        font-size: 0.95rem;
+    }
+
+    .online-content th,
+    .online-content td {
+        padding: 0.55rem 0.7rem;
+    }
+}
+
+
 
 /* =========================================================
    MATHERA CONTENT BOXY
@@ -2340,6 +2468,18 @@ section {
         16px;
 }
 
+.reader-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+
+    margin: 1.8rem 0;
+
+    -webkit-overflow-scrolling: touch;
+}
+
+.reader-table-wrap table {
+    margin: 0 auto;
+}
 
 /* =========================================================
    TABLET

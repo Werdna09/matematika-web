@@ -4,11 +4,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const desktopToc = document.getElementById("reader-toc");
     const mobileToc = document.getElementById("reader-toc-mobile");
 
-    const sidebar = document.getElementById("reader-sidebar");
-    const mobileDetails = document.getElementById("reader-mobile-toc");
-    const readerGrid = document.getElementById("reader-grid");
+    const desktopTocSection = document.getElementById(
+        "reader-toc-section"
+    );
 
-    if (!content || !desktopToc || !mobileToc) {
+    const mobileDetails = document.getElementById(
+        "reader-mobile-toc"
+    );
+
+    if (!content) {
         return;
     }
 
@@ -24,6 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
      */
     const usedIds = new Set();
 
+
     function createSlug(text) {
         return text
             .toLowerCase()
@@ -38,7 +43,9 @@ document.addEventListener("DOMContentLoaded", () => {
         let id = heading.id;
 
         if (!id) {
-            id = createSlug(heading.textContent.trim());
+            id = createSlug(
+                heading.textContent.trim()
+            );
 
             if (!id) {
                 id = `sekce-${index + 1}`;
@@ -54,20 +61,38 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         heading.id = uniqueId;
-        usedIds.add(uniqueId);
+
+        usedIds.add(
+            uniqueId
+        );
     });
 
 
     /*
-     * Pokud kapitola nemá žádné podnadpisy,
-     * navigaci vůbec nezobrazíme.
+     * Pokud aktuální kapitola nemá žádné H2/H3,
+     * schováme pouze její obsah.
+     *
+     * Sidebar samotný zůstává viditelný,
+     * protože obsahuje navigaci mezi kapitolami.
      */
     if (headings.length === 0) {
-        sidebar.hidden = true;
-        mobileDetails.hidden = true;
+        if (desktopTocSection) {
+            desktopTocSection.hidden = true;
+        }
 
-        readerGrid.classList.add("reader-grid-no-toc");
+        if (mobileDetails) {
+            mobileDetails.hidden = true;
+        }
 
+        return;
+    }
+
+
+    /*
+     * Bez těchto dvou kontejnerů není možné
+     * obsah kapitoly sestavit.
+     */
+    if (!desktopToc || !mobileToc) {
         return;
     }
 
@@ -77,41 +102,71 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function registerLink(id, link) {
         if (!linksById.has(id)) {
-            linksById.set(id, []);
+            linksById.set(
+                id,
+                []
+            );
         }
 
-        linksById.get(id).push(link);
+        linksById
+            .get(id)
+            .push(link);
     }
 
 
     function buildToc(container, mobile = false) {
         headings.forEach((heading) => {
-            const link = document.createElement("a");
+            const link =
+                document.createElement("a");
 
             link.href = `#${heading.id}`;
-            link.textContent = heading.textContent.trim();
 
-            link.classList.add("reader-toc-link");
+            link.textContent =
+                heading.textContent.trim();
+
+            link.classList.add(
+                "reader-toc-link"
+            );
 
             if (heading.tagName === "H3") {
-                link.classList.add("reader-toc-link-subsection");
+                link.classList.add(
+                    "reader-toc-link-subsection"
+                );
             }
 
-            registerLink(heading.id, link);
+            registerLink(
+                heading.id,
+                link
+            );
 
             if (mobile) {
-                link.addEventListener("click", () => {
-                    mobileDetails.removeAttribute("open");
-                });
+                link.addEventListener(
+                    "click",
+                    () => {
+                        if (mobileDetails) {
+                            mobileDetails.removeAttribute(
+                                "open"
+                            );
+                        }
+                    }
+                );
             }
 
-            container.appendChild(link);
+            container.appendChild(
+                link
+            );
         });
     }
 
 
-    buildToc(desktopToc);
-    buildToc(mobileToc, true);
+    buildToc(
+        desktopToc
+    );
+
+    buildToc(
+        mobileToc,
+        true
+    );
 
 
     let activeId = null;
@@ -123,18 +178,35 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         document
-            .querySelectorAll(".reader-toc-link.is-active")
+            .querySelectorAll(
+                ".reader-toc-link.is-active"
+            )
             .forEach((link) => {
-                link.classList.remove("is-active");
-                link.removeAttribute("aria-current");
+                link.classList.remove(
+                    "is-active"
+                );
+
+                link.removeAttribute(
+                    "aria-current"
+                );
             });
 
-        const activeLinks = linksById.get(id) || [];
+
+        const activeLinks =
+            linksById.get(id) || [];
+
 
         activeLinks.forEach((link) => {
-            link.classList.add("is-active");
-            link.setAttribute("aria-current", "location");
+            link.classList.add(
+                "is-active"
+            );
+
+            link.setAttribute(
+                "aria-current",
+                "location"
+            );
         });
+
 
         activeId = id;
     }
@@ -143,10 +215,15 @@ document.addEventListener("DOMContentLoaded", () => {
     function updateActiveSection() {
         const offset = 150;
 
-        let current = headings[0];
+        let current =
+            headings[0];
+
 
         for (const heading of headings) {
-            const top = heading.getBoundingClientRect().top;
+            const top =
+                heading
+                    .getBoundingClientRect()
+                    .top;
 
             if (top <= offset) {
                 current = heading;
@@ -157,34 +234,51 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         /*
-         * Pokud jsme úplně dole, označíme poslední sekci.
+         * Pokud jsme úplně dole,
+         * označíme poslední sekci.
          */
         const pageBottom =
-            window.scrollY + window.innerHeight;
+            window.scrollY
+            + window.innerHeight;
 
         const documentHeight =
-            document.documentElement.scrollHeight;
+            document
+                .documentElement
+                .scrollHeight;
 
-        if (pageBottom >= documentHeight - 4) {
-            current = headings[headings.length - 1];
+
+        if (
+            pageBottom
+            >= documentHeight - 4
+        ) {
+            current =
+                headings[
+                    headings.length - 1
+                ];
         }
 
 
-        setActive(current.id);
+        setActive(
+            current.id
+        );
     }
 
 
     let ticking = false;
+
 
     function handleScroll() {
         if (ticking) {
             return;
         }
 
-        window.requestAnimationFrame(() => {
-            updateActiveSection();
-            ticking = false;
-        });
+        window.requestAnimationFrame(
+            () => {
+                updateActiveSection();
+
+                ticking = false;
+            }
+        );
 
         ticking = true;
     }
@@ -193,8 +287,11 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener(
         "scroll",
         handleScroll,
-        { passive: true }
+        {
+            passive: true
+        }
     );
+
 
     window.addEventListener(
         "resize",
@@ -204,3 +301,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
     updateActiveSection();
 });
+
+document
+    .querySelectorAll("#reader-content table")
+    .forEach((table) => {
+        if (table.parentElement.classList.contains("reader-table-wrap")) {
+            return;
+        }
+
+        const wrapper = document.createElement("div");
+
+        wrapper.classList.add("reader-table-wrap");
+
+        table.parentNode.insertBefore(
+            wrapper,
+            table
+        );
+
+        wrapper.appendChild(
+            table
+        );
+    });

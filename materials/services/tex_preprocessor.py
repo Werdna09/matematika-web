@@ -24,6 +24,23 @@ EXERCISE_RE = re.compile(
 )
 
 
+# Včetně případného:
+#
+# \setcounter{section}{1}
+#
+# který bývá hned za \exercisepart.
+EXERCISE_PART_RE = re.compile(
+    r"\\exercisepart\b"
+    r"(?:"
+    r"\s*"
+    r"\\setcounter\s*"
+    r"\{\s*section\s*\}"
+    r"\s*"
+    r"\{\s*\d+\s*\}"
+    r")?"
+)
+
+
 TASKS_RE = re.compile(
     r"\\begin\{tasks\}"
     r"(?:\((\d+)\))?"
@@ -32,13 +49,28 @@ TASKS_RE = re.compile(
     flags=re.DOTALL,
 )
 
+
 IMPORTANT_RE = re.compile(
     r"\\important\{([^{}]*)\}"
 )
 
+
 NEWCOLUMN_RE = re.compile(
     r"(?m)^[ \t]*\\newcolumntype[^\n]*(?:\n|$)"
 )
+
+
+SECTION_COMMAND_RE = re.compile(
+    r"\\(subsubsection|subsection|section)\*?\s*\{"
+)
+
+
+SECTION_LEVELS = {
+    "section": 1,
+    "subsection": 2,
+    "subsubsection": 3,
+}
+
 
 # =========================================================
 # BOXY
@@ -79,6 +111,89 @@ def _replace_box(source, environment, box_type):
 
     return pattern.sub(
         replacer,
+        source,
+    )
+
+
+# =========================================================
+# EXERCISE PART
+# =========================================================
+
+def _detect_main_section_command(source):
+    """
+    Zjistí, jakou nejvyšší úroveň nadpisu používá dokument.
+
+    Např.:
+        \\section       -> section
+        \\subsection    -> subsection
+
+    Díky tomu nevytvoříme uprostřed dokumentu nadpis vyšší úrovně,
+    než používají ostatní kapitoly readeru.
+    """
+
+    # Pokud máme kompletní LaTeX dokument, zajímá nás jen obsah
+    # mezi \begin{document} a \end{document}.
+    begin_match = re.search(
+        r"\\begin\{document\}",
+        source,
+    )
+
+    end_match = re.search(
+        r"\\end\{document\}",
+        source,
+    )
+
+    if (
+        begin_match is not None
+        and end_match is not None
+        and end_match.start() > begin_match.end()
+    ):
+        body = source[
+            begin_match.end():
+            end_match.start()
+        ]
+
+    else:
+        body = source
+
+    commands = SECTION_COMMAND_RE.findall(
+        body
+    )
+
+    if not commands:
+        return "section"
+
+    return min(
+        commands,
+        key=lambda command: SECTION_LEVELS[command],
+    )
+
+
+def _replace_exercise_part(source):
+    """
+    \exercisepart převede na skutečný nadpis stejné úrovně,
+    jakou používají hlavní kapitoly dokumentu.
+
+    Například:
+
+        dokument používá \section
+        -> \section{Příklady k procvičení}
+
+        dokument používá pouze \subsection
+        -> \subsection{Příklady k procvičení}
+    """
+
+    section_command = _detect_main_section_command(
+        source
+    )
+
+    replacement = (
+        f"\\{section_command}"
+        "{Příklady k procvičení}"
+    )
+
+    return EXERCISE_PART_RE.sub(
+        lambda match: replacement,
         source,
     )
 
@@ -139,6 +254,11 @@ def _replace_exercise_block(match):
         title,
         tasks,
     )
+
+
+# =========================================================
+# IMPORTANT
+# =========================================================
 
 def _replace_important(match):
     content = match.group(1).strip()
@@ -201,6 +321,21 @@ def _replace_tasks(match):
 # =========================================================
 
 def preprocess_tex(source):
+    # -----------------------------------------------------
+    # PŘÍKLADY K PROCVIČENÍ
+    # -----------------------------------------------------
+    #
+    # Uděláme z \exercisepart samostatnou kapitolu readeru,
+    # ale zachováme stejnou úroveň nadpisu jako ve zbytku
+    # konkrétního dokumentu.
+    source = _replace_exercise_part(
+        source
+    )
+
+    # -----------------------------------------------------
+    # EXERCISEBLOCK
+    # -----------------------------------------------------
+    #
     # Exerciseblock musíme převést dřív,
     # protože z něj vznikne explicitní tasks.
     source = EXERCISE_BLOCK_RE.sub(
@@ -208,14 +343,28 @@ def preprocess_tex(source):
         source,
     )
 
+    # -----------------------------------------------------
+    # EXERCISE
+    # -----------------------------------------------------
+
     source = EXERCISE_RE.sub(
         _replace_exercise,
         source,
     )
 
-    source = NEWCOLUMN_RE.sub("", source)
+    # -----------------------------------------------------
+    # PANDOC KOMPATIBILITA
+    # -----------------------------------------------------
 
-    # Převod vlastních boxů.
+    source = NEWCOLUMN_RE.sub(
+        "",
+        source,
+    )
+
+    # -----------------------------------------------------
+    # BOXY
+    # -----------------------------------------------------
+
     for environment, box_type in BOX_ENVIRONMENTS.items():
         source = _replace_box(
             source,
@@ -223,12 +372,20 @@ def preprocess_tex(source):
             box_type,
         )
 
+    # -----------------------------------------------------
+    # TASKS
+    # -----------------------------------------------------
+    #
     # Tasks až nakonec, protože je mohou vytvořit
     # předchozí transformace.
     source = TASKS_RE.sub(
         _replace_tasks,
         source,
     )
+
+    # -----------------------------------------------------
+    # IMPORTANT
+    # -----------------------------------------------------
 
     source = IMPORTANT_RE.sub(
         _replace_important,

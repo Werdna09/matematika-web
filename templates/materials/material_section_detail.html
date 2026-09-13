@@ -34,25 +34,68 @@
 
     <div class="reader-grid" id="reader-grid">
 
+        <!-- =====================================================
+             LEVÝ SIDEBAR
+             ===================================================== -->
+
         <aside class="reader-sidebar" id="reader-sidebar">
 
             <div class="reader-sidebar-inner">
 
-                <p class="reader-toc-title">
-                    Obsah kapitoly
-                </p>
 
-                <nav
-                    class="reader-toc"
-                    id="reader-toc"
-                    aria-label="Obsah kapitoly"
-                >
-                </nav>
+                <!-- =============================================
+                     KAPITOLY MATERIÁLU
+                     ============================================= -->
+
+                <div class="reader-sidebar-section">
+
+                    <div class="reader-sidebar-label">
+                        Kapitoly
+                    </div>
+
+                    <nav class="reader-chapter-list" aria-label="Kapitoly materiálu">
+
+                        {% for chapter in material.sections.all %}
+
+                        <a href="{% url 'materials:material_section_detail' material.slug chapter.slug %}"
+                            class="reader-chapter-link{% if chapter.pk == section.pk %} is-active{% endif %}">
+                            {{ chapter.title }}
+                        </a>
+
+                        {% endfor %}
+
+                    </nav>
+
+                </div>
+
+
+                <div class="reader-sidebar-divider"></div>
+
+
+                <!-- =============================================
+                     OBSAH AKTUÁLNÍ KAPITOLY
+                     ============================================= -->
+
+                <div class="reader-sidebar-section" id="reader-toc-section">
+
+                    <div class="reader-sidebar-label">
+                        Obsah kapitoly
+                    </div>
+
+                    <nav class="reader-toc" id="reader-toc" aria-label="Obsah kapitoly">
+                    </nav>
+
+                </div>
+
 
             </div>
 
         </aside>
 
+
+        <!-- =====================================================
+             HLAVNÍ OBSAH
+             ===================================================== -->
 
         <div class="reader-main">
 
@@ -69,28 +112,63 @@
             </div>
 
 
+            <!-- =================================================
+                 MOBILNÍ NAVIGACE MEZI KAPITOLAMI
+                 ================================================= -->
+
+            <details class="reader-mobile-toc reader-mobile-chapters">
+
+                <summary>
+                    Kapitoly
+                </summary>
+
+                <nav class="reader-chapter-list reader-chapter-list-mobile" aria-label="Kapitoly materiálu">
+
+                    {% for chapter in material.sections.all %}
+
+                    <a href="{% url 'materials:material_section_detail' material.slug chapter.slug %}"
+                        class="reader-chapter-link{% if chapter.pk == section.pk %} is-active{% endif %}">
+                        {{ chapter.title }}
+                    </a>
+
+                    {% endfor %}
+
+                </nav>
+
+            </details>
+
+
+            <!-- =================================================
+                 MOBILNÍ OBSAH AKTUÁLNÍ KAPITOLY
+                 ================================================= -->
+
             <details class="reader-mobile-toc" id="reader-mobile-toc">
 
                 <summary>
                     Obsah kapitoly
                 </summary>
 
-                <nav
-                    class="reader-toc reader-toc-mobile"
-                    id="reader-toc-mobile"
-                    aria-label="Obsah kapitoly"
-                >
+                <nav class="reader-toc reader-toc-mobile" id="reader-toc-mobile" aria-label="Obsah kapitoly">
                 </nav>
 
             </details>
 
 
-            <article class="reader-content online-content" id="reader-content">
+            <!-- =================================================
+                 TEXT KAPITOLY
+                 ================================================= -->
+
+            <article class="reader-content online-content" id="reader-content"
+                style="--chapter-number: '{{ section.order }}';">
 
                 {{ section.html_content|safe }}
 
             </article>
 
+
+            <!-- =================================================
+                 PŘEDCHOZÍ / DALŠÍ KAPITOLA
+                 ================================================= -->
 
             <nav class="reader-navigation">
 
@@ -98,10 +176,8 @@
 
                     {% if previous_section %}
 
-                    <a
-                        href="{% url 'materials:material_section_detail' material.slug previous_section.slug %}"
-                        class="reader-nav-link"
-                    >
+                    <a href="{% url 'materials:material_section_detail' material.slug previous_section.slug %}"
+                        class="reader-nav-link">
 
                         <span class="reader-nav-label">
                             ← Předchozí
@@ -122,10 +198,8 @@
 
                     {% if next_section %}
 
-                    <a
-                        href="{% url 'materials:material_section_detail' material.slug next_section.slug %}"
-                        class="reader-nav-link"
-                    >
+                    <a href="{% url 'materials:material_section_detail' material.slug next_section.slug %}"
+                        class="reader-nav-link">
 
                         <span class="reader-nav-label">
                             Další →
