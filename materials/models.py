@@ -95,14 +95,26 @@ class Material(models.Model):
     pdf_file = models.FileField(
         upload_to="materials/%Y/%m/",
         validators=[FileExtensionValidator(["pdf"])],
+        blank=True,
     )
 
     source_tex = models.FileField(
-       upload_to="sources/%Y/%m/",
+        upload_to="sources/%Y/%m/",
         validators=[FileExtensionValidator(["tex"])],
         blank=True,
         help_text="Zdrojový LaTeX soubor materiálu.",
-    )    
+    )
+
+    source_material = models.ForeignKey(
+        "self",
+        on_delete=models.CASCADE,
+        related_name="derived_materials",
+        null=True,
+        blank=True,
+        help_text=(
+            "Zdrojový materiál, ze kterého byl tento materiál automaticky odvozen."
+        ),
+    )
 
     html_content = models.TextField(
         blank=True,
@@ -127,6 +139,7 @@ class Material(models.Model):
 
     def __str__(self):
         return self.title
+
 
 class MaterialSection(models.Model):
     material = models.ForeignKey(

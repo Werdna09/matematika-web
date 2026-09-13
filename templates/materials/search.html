@@ -1,16 +1,17 @@
 {% extends "base.html" %}
+{% load static %}
 
 
 {% block title %}
-    Hledání | Matematika
+{{ section.title }} | {{ material.title }} | Mathera
 {% endblock %}
 
 
 {% block content %}
 
-<div class="page-header">
+<div class="reader-page">
 
-    <nav class="breadcrumbs">
+    <nav class="breadcrumbs reader-breadcrumbs">
 
         <a href="{% url 'core:home' %}">
             Domů
@@ -18,256 +19,249 @@
 
         <span>›</span>
 
+        <a href="{% url 'materials:material_detail' material.slug %}">
+            {{ material.title }}
+        </a>
+
+        <span>›</span>
+
         <span>
-            Hledání
+            {{ section.title }}
         </span>
 
     </nav>
 
-    <p class="eyebrow">
-        Materiály
-    </p>
 
-    <h1>
-        Hledání
-    </h1>
+    <div class="reader-grid" id="reader-grid">
 
-</div>
+        <!-- =====================================================
+             LEVÝ SIDEBAR
+             ===================================================== -->
 
+        <aside class="reader-sidebar" id="reader-sidebar">
 
-<form
-    action="{% url 'materials:search' %}"
-    method="get"
-    class="filter-form"
->
-
-    <div class="filter-search">
-
-        <label for="search">
-            Hledat
-        </label>
-
-        <input
-            id="search"
-            type="search"
-            name="q"
-            value="{{ query }}"
-            placeholder="Např. vektory, funkce, maturita…"
-        >
-
-    </div>
+            <div class="reader-sidebar-inner">
 
 
-    <div class="filter-grid">
+                <!-- =============================================
+                     KAPITOLY / ÚLOHY MATERIÁLU
+                     ============================================= -->
 
-        <div class="filter-field">
+                <div class="reader-sidebar-section">
 
-            <label for="grade">
-                Ročník
-            </label>
-
-            <select
-                id="grade"
-                name="grade"
-            >
-
-                <option value="">
-                    Všechny ročníky
-                </option>
-
-                {% for grade in grades %}
-
-                    <option
-                        value="{{ grade.id }}"
-                        {% if grade.id == selected_grade_id %}
-                            selected
+                    <div class="reader-sidebar-label">
+                        {% if is_practice %}
+                            Procvičování
+                        {% else %}
+                            Kapitoly
                         {% endif %}
-                    >
-                        {{ grade.name }}
-                    </option>
+                    </div>
 
-                {% endfor %}
+                    <nav class="reader-chapter-list" aria-label="Kapitoly materiálu">
 
-            </select>
+                        {% for chapter in material.sections.all %}
 
-        </div>
+                        <a href="{% url 'materials:material_section_detail' material.slug chapter.slug %}"
+                            class="reader-chapter-link{% if chapter.pk == section.pk %} is-active{% endif %}">
+                            {{ chapter.title }}
+                        </a>
 
+                        {% endfor %}
 
-        <div class="filter-field">
-
-            <label for="topic">
-                Téma
-            </label>
-
-            <select
-                id="topic"
-                name="topic"
-            >
-
-                <option value="">
-                    Všechna témata
-                </option>
-
-                {% for topic in topics %}
-
-                    <option
-                        value="{{ topic.id }}"
-                        {% if topic.id == selected_topic_id %}
-                            selected
-                        {% endif %}
-                    >
-                        {{ topic.name }}
-                    </option>
-
-                {% endfor %}
-
-            </select>
-
-        </div>
-
-
-        <div class="filter-field">
-
-            <label for="type">
-                Typ materiálu
-            </label>
-
-            <select
-                id="type"
-                name="type"
-            >
-
-                <option value="">
-                    Všechny typy
-                </option>
-
-                {% for material_type in material_types %}
-
-                    <option
-                        value="{{ material_type.id }}"
-                        {% if material_type.id == selected_type_id %}
-                            selected
-                        {% endif %}
-                    >
-                        {{ material_type.name }}
-                    </option>
-
-                {% endfor %}
-
-            </select>
-
-        </div>
-
-    </div>
-
-
-    <div class="filter-actions">
-
-        <button
-            type="submit"
-            class="button"
-        >
-            Hledat
-        </button>
-
-        <a
-            href="{% url 'materials:search' %}"
-            class="button button-secondary"
-        >
-            Zrušit filtry
-        </a>
-
-    </div>
-
-</form>
-
-
-<div class="search-results-header">
-
-    <h2>
-        Výsledky
-    </h2>
-
-    <span>
-        {{ materials|length }}
-        {% if materials|length == 1 %}
-            materiál
-        {% else %}
-            materiálů
-        {% endif %}
-    </span>
-
-</div>
-
-
-<div class="material-list">
-
-    {% for material in materials %}
-
-        <article class="material-card">
-
-            <div class="material-info">
-
-                <span class="material-type">
-                    {{ material.material_type.name }}
-                    ·
-                    {{ material.topic.name }}
-                </span>
-
-                <h3>
-                    {{ material.title }}
-                </h3>
-
-                {% if material.description %}
-
-                    <p>
-                        {{ material.description }}
-                    </p>
-
-                {% endif %}
-
-
-                <div class="search-grades">
-
-                    {% for grade in material.grades.all %}
-
-                        <span>
-                            {{ grade.name }}
-                        </span>
-
-                    {% endfor %}
+                    </nav>
 
                 </div>
+
+
+                <div class="reader-sidebar-divider"></div>
+
+
+                <!-- =============================================
+                     OBSAH AKTUÁLNÍ KAPITOLY
+                     ============================================= -->
+
+                <div class="reader-sidebar-section" id="reader-toc-section">
+
+                    <div class="reader-sidebar-label">
+                        Obsah kapitoly
+                    </div>
+
+                    <nav class="reader-toc" id="reader-toc" aria-label="Obsah kapitoly">
+                    </nav>
+
+                </div>
+
+
+            </div>
+
+        </aside>
+
+
+        <!-- =====================================================
+             HLAVNÍ OBSAH
+             ===================================================== -->
+
+        <div class="reader-main">
+
+            <div class="reader-header">
+
+                <p class="eyebrow">
+                    {{ material.title }}
+                </p>
+
+                <h1>
+                    {{ section.title }}
+                </h1>
 
             </div>
 
 
-            <a
-                href="{% url 'materials:material_detail' material.slug %}"
-                class="button"
-            >
-                Zobrazit
-            </a>
+            <!-- =================================================
+                 MOBILNÍ NAVIGACE MEZI KAPITOLAMI
+                 ================================================= -->
 
-        </article>
+            <details class="reader-mobile-toc reader-mobile-chapters">
+
+                <summary>
+                    {% if is_practice %}
+                        Procvičování
+                    {% else %}
+                        Kapitoly
+                    {% endif %}
+                </summary>
+
+                <nav class="reader-chapter-list reader-chapter-list-mobile" aria-label="Kapitoly materiálu">
+
+                    {% for chapter in material.sections.all %}
+
+                    <a href="{% url 'materials:material_section_detail' material.slug chapter.slug %}"
+                        class="reader-chapter-link{% if chapter.pk == section.pk %} is-active{% endif %}">
+                        {{ chapter.title }}
+                    </a>
+
+                    {% endfor %}
+
+                </nav>
+
+            </details>
 
 
-    {% empty %}
+            <!-- =================================================
+                 MOBILNÍ OBSAH AKTUÁLNÍ KAPITOLY
+                 ================================================= -->
 
-        <div class="empty-state">
+            <details class="reader-mobile-toc" id="reader-mobile-toc">
 
-            <h2>
-                Nic jsme nenašli.
-            </h2>
+                <summary>
+                    Obsah kapitoly
+                </summary>
 
-            <p>
-                Zkus změnit hledaný výraz nebo některý z filtrů.
-            </p>
+                <nav class="reader-toc reader-toc-mobile" id="reader-toc-mobile" aria-label="Obsah kapitoly">
+                </nav>
+
+            </details>
+
+
+            <!-- =================================================
+                 TEXT KAPITOLY
+                 ================================================= -->
+
+            <article class="reader-content online-content" id="reader-content"
+                style="--chapter-number: '{{ section.order }}';">
+
+                {{ section.html_content|safe }}
+
+            </article>
+
+
+            <!-- =================================================
+                 PŘEDCHOZÍ / DALŠÍ / PROCVIČOVÁNÍ
+                 ================================================= -->
+
+            <nav class="reader-navigation">
+
+                <div class="reader-navigation-side">
+
+                    {% if previous_section %}
+
+                    <a href="{% url 'materials:material_section_detail' material.slug previous_section.slug %}"
+                        class="reader-nav-link">
+
+                        <span class="reader-nav-label">
+                            ← Předchozí
+                        </span>
+
+                        <strong>
+                            {{ previous_section.title }}
+                        </strong>
+
+                    </a>
+
+                    {% elif source_material %}
+
+                    <a href="{% url 'materials:material_detail' source_material.slug %}"
+                        class="reader-nav-link">
+
+                        <span class="reader-nav-label">
+                            ← Zpět na učební text
+                        </span>
+
+                        <strong>
+                            {{ source_material.title }}
+                        </strong>
+
+                    </a>
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="reader-navigation-side reader-navigation-next">
+
+                    {% if next_section %}
+
+                    <a href="{% url 'materials:material_section_detail' material.slug next_section.slug %}"
+                        class="reader-nav-link">
+
+                        <span class="reader-nav-label">
+                            Další →
+                        </span>
+
+                        <strong>
+                            {{ next_section.title }}
+                        </strong>
+
+                    </a>
+
+                    {% elif practice_first_section %}
+
+                    <a href="{% url 'materials:material_section_detail' practice_material.slug practice_first_section.slug %}"
+                        class="reader-nav-link reader-nav-practice">
+
+                        <span class="reader-nav-label">
+                            Procvičování →
+                        </span>
+
+                        <strong>
+                            Pokračovat na procvičování
+                        </strong>
+
+                    </a>
+
+                    {% endif %}
+
+                </div>
+
+            </nav>
 
         </div>
 
-    {% endfor %}
+    </div>
 
 </div>
+
+
+<script src="{% static 'js/reader-scrollspy.js' %}"></script>
 
 {% endblock %}

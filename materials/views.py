@@ -4,6 +4,37 @@ from django.shortcuts import get_object_or_404, render
 from .models import Grade, Material, MaterialSection, MaterialType, Topic
 
 
+PRACTICE_TYPE_SLUG = "procvicovani"
+
+
+def _published_source_material(material):
+    source = material.source_material
+
+    if (
+        source is not None
+        and source.status == Material.Status.PUBLISHED
+    ):
+        return source
+
+    return None
+
+
+def _published_practice_material(material):
+    if material.source_material_id:
+        return None
+
+    return (
+        material.derived_materials
+        .filter(
+            material_type__slug=PRACTICE_TYPE_SLUG,
+            status=Material.Status.PUBLISHED,
+        )
+        .prefetch_related("sections")
+        .order_by("pk")
+        .first()
+    )
+
+
 def grade_detail(request, slug):
     grade = get_object_or_404(Grade, slug=slug)
 
@@ -23,6 +54,7 @@ def grade_detail(request, slug):
             "topics": topics,
         },
     )
+
 
 def topic_detail(request, grade_slug, topic_slug):
     grade = get_object_or_404(Grade, slug=grade_slug)
@@ -58,12 +90,14 @@ def topic_detail(request, grade_slug, topic_slug):
         },
     )
 
+
 def material_detail(request, slug):
     material = get_object_or_404(
         Material.objects
         .select_related(
             "topic",
             "material_type",
+            "source_material",
         )
         .prefetch_related(
             "grades",
@@ -74,12 +108,33 @@ def material_detail(request, slug):
         status=Material.Status.PUBLISHED,
     )
 
-    sections = list(material.sections.all())
+    sections = list(
+        material.sections.all()
+    )
 
     first_section = (
         sections[0]
         if sections
         else None
+    )
+
+    source_material = _published_source_material(
+        material
+    )
+
+    practice_material = _published_practice_material(
+        material
+    )
+
+    practice_first_section = (
+        practice_material.sections.first()
+        if practice_material is not None
+        else None
+    )
+
+    is_practice = (
+        material.material_type.slug
+        == PRACTICE_TYPE_SLUG
     )
 
     return render(
@@ -89,8 +144,13 @@ def material_detail(request, slug):
             "material": material,
             "sections": sections,
             "first_section": first_section,
+            "source_material": source_material,
+            "practice_material": practice_material,
+            "practice_first_section": practice_first_section,
+            "is_practice": is_practice,
         },
     )
+
 
 def material_section_detail(request, material_slug, section_slug):
     material = get_object_or_404(
@@ -98,6 +158,7 @@ def material_section_detail(request, material_slug, section_slug):
         .select_related(
             "topic",
             "material_type",
+            "source_material",
         )
         .prefetch_related(
             "grades",
@@ -113,9 +174,13 @@ def material_section_detail(request, material_slug, section_slug):
         slug=section_slug,
     )
 
-    sections = list(material.sections.all())
+    sections = list(
+        material.sections.all()
+    )
 
-    current_index = sections.index(section)
+    current_index = sections.index(
+        section
+    )
 
     previous_section = (
         sections[current_index - 1]
@@ -129,6 +194,25 @@ def material_section_detail(request, material_slug, section_slug):
         else None
     )
 
+    source_material = _published_source_material(
+        material
+    )
+
+    practice_material = _published_practice_material(
+        material
+    )
+
+    practice_first_section = (
+        practice_material.sections.first()
+        if practice_material is not None
+        else None
+    )
+
+    is_practice = (
+        material.material_type.slug
+        == PRACTICE_TYPE_SLUG
+    )
+
     return render(
         request,
         "materials/material_section_detail.html",
@@ -137,8 +221,13 @@ def material_section_detail(request, material_slug, section_slug):
             "section": section,
             "previous_section": previous_section,
             "next_section": next_section,
+            "source_material": source_material,
+            "practice_material": practice_material,
+            "practice_first_section": practice_first_section,
+            "is_practice": is_practice,
         },
     )
+
 
 def search(request):
     query = request.GET.get("q", "").strip()
