@@ -26,8 +26,11 @@ def _published_practice_material(material):
     return (
         material.derived_materials
         .filter(
-            material_type__slug=PRACTICE_TYPE_SLUG,
             status=Material.Status.PUBLISHED,
+        )
+        .filter(
+            Q(material_type__slug=PRACTICE_TYPE_SLUG)
+            | Q(material_type__name__iexact="Procvičování")
         )
         .prefetch_related("sections")
         .order_by("pk")

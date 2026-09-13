@@ -166,10 +166,6 @@
             </article>
 
 
-            <!-- =================================================
-                 PŘEDCHOZÍ / DALŠÍ KAPITOLA
-                 ================================================= -->
-
             <nav class="reader-navigation">
 
                 <div class="reader-navigation-side">
@@ -178,7 +174,6 @@
 
                     <a href="{% url 'materials:material_section_detail' material.slug previous_section.slug %}"
                         class="reader-nav-link">
-
                         <span class="reader-nav-label">
                             ← Předchozí
                         </span>
@@ -186,7 +181,18 @@
                         <strong>
                             {{ previous_section.title }}
                         </strong>
+                    </a>
 
+                    {% elif source_material %}
+
+                    <a href="{% url 'materials:material_detail' source_material.slug %}" class="reader-nav-link">
+                        <span class="reader-nav-label">
+                            ← Zpět na učební text
+                        </span>
+
+                        <strong>
+                            {{ source_material.title }}
+                        </strong>
                     </a>
 
                     {% endif %}
@@ -200,7 +206,6 @@
 
                     <a href="{% url 'materials:material_section_detail' material.slug next_section.slug %}"
                         class="reader-nav-link">
-
                         <span class="reader-nav-label">
                             Další →
                         </span>
@@ -208,7 +213,19 @@
                         <strong>
                             {{ next_section.title }}
                         </strong>
+                    </a>
 
+                    {% elif practice_first_section %}
+
+                    <a href="{% url 'materials:material_section_detail' practice_material.slug practice_first_section.slug %}"
+                        class="reader-nav-link">
+                        <span class="reader-nav-label">
+                            Procvičování →
+                        </span>
+
+                        <strong>
+                            Příklady k procvičení
+                        </strong>
                     </a>
 
                     {% endif %}

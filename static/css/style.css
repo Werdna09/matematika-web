@@ -2481,6 +2481,8 @@ section {
     margin: 0 auto;
 }
 
+
+
 /* =========================================================
    TABLET
    ========================================================= */
@@ -2907,5 +2909,39 @@ section {
     .online-content img[src*="/generated/tikz/"] {
         margin-top: 1.4rem;
         margin-bottom: 1.4rem;
+    }
+}
+
+
+/*==================================*/
+
+.reader-practice-cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+
+    margin-top: 2.5rem;
+    padding: 2rem;
+
+    border: 1px solid rgba(38, 104, 112, 0.16);
+    border-left: 4px solid #266870;
+    border-radius: 16px;
+
+    background: rgba(38, 104, 112, 0.055);
+}
+
+.reader-practice-cta h2 {
+    margin: 0.35rem 0 0.4rem;
+}
+
+.reader-practice-cta p {
+    margin: 0;
+}
+
+@media (max-width: 650px) {
+    .reader-practice-cta {
+        flex-direction: column;
+        align-items: flex-start;
     }
 }
