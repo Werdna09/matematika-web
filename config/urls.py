@@ -25,6 +25,7 @@ urlpatterns = [
 
     path("", include("core.urls")),
     path("", include("materials.urls")),
+    path("", include("exams.urls")),
 ]
 
 if settings.DEBUG:
