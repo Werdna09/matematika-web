@@ -2,7 +2,7 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404, render
 
 from .models import Grade, Material, MaterialSection, MaterialType, Topic
-
+from exams.models import Exam
 
 PRACTICE_TYPE_SLUG = "procvicovani"
 
@@ -239,6 +239,10 @@ def search(request):
     selected_topic = request.GET.get("topic", "")
     selected_type = request.GET.get("type", "")
 
+    # =========================================================
+    # BĚŽNÉ MATERIÁLY
+    # =========================================================
+
     materials = (
         Material.objects.filter(
             status=Material.Status.PUBLISHED,
@@ -280,16 +284,78 @@ def search(request):
 
     materials = materials.distinct()
 
+
+    # =========================================================
+    # MATURITY
+    # =========================================================
+
+    exams = Exam.objects.none()
+
+    # Maturity zobrazujeme pouze při textovém hledání.
+    # Filtry ročník/téma/typ se vztahují jen na běžné materiály.
+    if (
+        query
+        and not selected_grade
+        and not selected_topic
+        and not selected_type
+    ):
+        exam_filter = (
+            Q(title__icontains=query)
+            | Q(description__icontains=query)
+        )
+
+        # Umožní hledat například "2016".
+        if query.isdigit():
+            exam_filter |= Q(year=int(query))
+
+        normalized_query = query.casefold()
+
+        # Umožní hledat podle termínu.
+        if normalized_query in {
+            "jaro",
+            "jarní",
+            "jarni",
+        }:
+            exam_filter |= Q(term=Exam.Term.SPRING)
+
+        elif normalized_query in {
+            "podzim",
+            "podzimní",
+            "podzimni",
+        }:
+            exam_filter |= Q(term=Exam.Term.AUTUMN)
+
+        exams = (
+            Exam.objects
+            .filter(
+                exam_filter,
+                status=Exam.Status.PUBLISHED,
+            )
+            .order_by(
+                "-year",
+                "term",
+                "title",
+            )
+        )
+
+
+    # =========================================================
+    # FILTRY
+    # =========================================================
+
     grades = Grade.objects.all()
     topics = Topic.objects.all()
     material_types = MaterialType.objects.all()
+
 
     return render(
         request,
         "materials/search.html",
         {
             "query": query,
+
             "materials": materials,
+            "exams": exams,
 
             "grades": grades,
             "topics": topics,

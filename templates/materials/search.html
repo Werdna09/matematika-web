@@ -2,7 +2,7 @@
 
 
 {% block title %}
-    Hledání | Matematika
+    Hledání | Mathera
 {% endblock %}
 
 
@@ -24,8 +24,9 @@
 
     </nav>
 
+
     <p class="eyebrow">
-        Materiály
+        Mathera
     </p>
 
     <h1>
@@ -34,6 +35,10 @@
 
 </div>
 
+
+{# ========================================================= #}
+{# FILTRY                                                    #}
+{# ========================================================= #}
 
 <form
     action="{% url 'materials:search' %}"
@@ -182,92 +187,190 @@
 </form>
 
 
-<div class="search-results-header">
+{# ========================================================= #}
+{# VÝSLEDKY – MATURITY                                       #}
+{# ========================================================= #}
 
-    <h2>
-        Výsledky
-    </h2>
+{% if exams %}
 
-    <span>
-        {{ materials|length }}
-        {% if materials|length == 1 %}
-            materiál
-        {% else %}
-            materiálů
-        {% endif %}
-    </span>
+    <section class="search-result-section">
 
-</div>
-
-
-<div class="material-list">
-
-    {% for material in materials %}
-
-        <article class="material-card">
-
-            <div class="material-info">
-
-                <span class="material-type">
-                    {{ material.material_type.name }}
-                    ·
-                    {{ material.topic.name }}
-                </span>
-
-                <h3>
-                    {{ material.title }}
-                </h3>
-
-                {% if material.description %}
-
-                    <p>
-                        {{ material.description }}
-                    </p>
-
-                {% endif %}
-
-
-                <div class="search-grades">
-
-                    {% for grade in material.grades.all %}
-
-                        <span>
-                            {{ grade.name }}
-                        </span>
-
-                    {% endfor %}
-
-                </div>
-
-            </div>
-
-
-            <a
-                href="{% url 'materials:material_detail' material.slug %}"
-                class="button"
-            >
-                Zobrazit
-            </a>
-
-        </article>
-
-
-    {% empty %}
-
-        <div class="empty-state">
+        <div class="search-results-header">
 
             <h2>
-                Nic jsme nenašli.
+                Maturity
             </h2>
 
-            <p>
-                Zkus změnit hledaný výraz nebo některý z filtrů.
-            </p>
+            <span>
+                {{ exams|length }}
+
+                {% if exams|length == 1 %}
+                    maturita
+                {% else %}
+                    maturit
+                {% endif %}
+            </span>
 
         </div>
 
-    {% endfor %}
 
-</div>
+        <div class="material-list">
+
+            {% for exam in exams %}
+
+                <article class="material-card">
+
+                    <div class="material-info">
+
+                        <span class="material-type">
+                            Maturita
+                            ·
+                            {{ exam.get_term_display }}
+                            {{ exam.year }}
+                        </span>
+
+
+                        <h3>
+                            {{ exam.title }}
+                        </h3>
+
+
+                        {% if exam.description %}
+
+                            <p>
+                                {{ exam.description }}
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <a
+                        href="{% url 'exams:exam_detail' exam.slug %}"
+                        class="button"
+                    >
+                        Zobrazit
+                    </a>
+
+                </article>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+{% endif %}
+
+
+{# ========================================================= #}
+{# VÝSLEDKY – MATERIÁLY                                      #}
+{# ========================================================= #}
+
+{% if materials %}
+
+    <section class="search-result-section">
+
+        <div class="search-results-header">
+
+            <h2>
+                Materiály
+            </h2>
+
+            <span>
+                {{ materials|length }}
+
+                {% if materials|length == 1 %}
+                    materiál
+                {% else %}
+                    materiálů
+                {% endif %}
+            </span>
+
+        </div>
+
+
+        <div class="material-list">
+
+            {% for material in materials %}
+
+                <article class="material-card">
+
+                    <div class="material-info">
+
+                        <span class="material-type">
+                            {{ material.material_type.name }}
+                            ·
+                            {{ material.topic.name }}
+                        </span>
+
+
+                        <h3>
+                            {{ material.title }}
+                        </h3>
+
+
+                        {% if material.description %}
+
+                            <p>
+                                {{ material.description }}
+                            </p>
+
+                        {% endif %}
+
+
+                        <div class="search-grades">
+
+                            {% for grade in material.grades.all %}
+
+                                <span>
+                                    {{ grade.name }}
+                                </span>
+
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
+
+
+                    <a
+                        href="{% url 'materials:material_detail' material.slug %}"
+                        class="button"
+                    >
+                        Zobrazit
+                    </a>
+
+                </article>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+{% endif %}
+
+
+{# ========================================================= #}
+{# ŽÁDNÉ VÝSLEDKY                                            #}
+{# ========================================================= #}
+
+{% if not materials and not exams %}
+
+    <div class="empty-state">
+
+        <h2>
+            Nic jsme nenašli.
+        </h2>
+
+        <p>
+            Zkus změnit hledaný výraz nebo některý z filtrů.
+        </p>
+
+    </div>
+
+{% endif %}
 
 {% endblock %}
