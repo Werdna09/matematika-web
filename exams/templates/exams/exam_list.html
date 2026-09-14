@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Maturita z matematiky | Mathera{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <p class="eyebrow">Maturita</p>
+    <h1>Maturita z matematiky</h1>
+    <p class="hero-text">
+        Originální zadání testů a podrobná řešení jednotlivých úloh.
+    </p>
+</div>
+
+{% if exams %}
+
+<div class="material-list">
+    {% for exam in exams %}
+
+    <a href="{% url 'exams:exam_detail' exam.slug %}" class="material-card exam-list-link">
+        <div class="material-info">
+            <span class="material-type">
+                {{ exam.get_term_display }} {{ exam.year }}
+            </span>
+
+            <h3>{{ exam.title }}</h3>
+
+            {% if exam.description %}
+            <p>{{ exam.description }}</p>
+            {% else %}
+            <p>{{ exam.tasks.count }} úloh s originálním zadáním a řešením.</p>
+            {% endif %}
+        </div>
+
+        <span class="exam-card-meta">
+            {{ exam.tasks.count }} úloh →
+        </span>
+    </a>
+
+    {% endfor %}
+</div>
+
+{% else %}
+
+<div class="empty-state">
+    <h2>Zatím zde není žádná publikovaná maturita.</h2>
+    <p>Po prvním importu se objeví právě tady.</p>
+</div>
+
+{% endif %}
+
+{% endblock %}

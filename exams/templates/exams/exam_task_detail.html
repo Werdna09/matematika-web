@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Úloha {{ task.number }} | {{ exam.title }} | Mathera{% endblock %}
+
+{% block content %}
+
+<div class="reader-page">
+
+    <nav class="breadcrumbs reader-breadcrumbs">
+        <a href="{% url 'core:home' %}">Domů</a>
+        <span>›</span>
+        <a href="{% url 'exams:exam_list' %}">Maturita</a>
+        <span>›</span>
+        <a href="{% url 'exams:exam_detail' exam.slug %}">{{ exam.title }}</a>
+        <span>›</span>
+        <span>Úloha {{ task.number }}</span>
+    </nav>
+
+    <div class="reader-grid">
+
+        <aside class="reader-sidebar">
+            <div class="reader-sidebar-inner">
+                <div class="reader-sidebar-section">
+                    <div class="reader-sidebar-label">Úlohy</div>
+
+                    <nav class="exam-task-list" aria-label="Úlohy maturity">
+                        {% for item in tasks %}
+                        <a href="{% url 'exams:exam_task_detail' exam.slug item.number %}"
+                           class="exam-task-link{% if item.pk == task.pk %} is-active{% endif %}">
+                            {{ item.number }}
+                        </a>
+                        {% endfor %}
+                    </nav>
+                </div>
+            </div>
+        </aside>
+
+        <div class="reader-main">
+
+            <div class="reader-header">
+                <p class="eyebrow">{{ exam.title }}</p>
+                <h1>Úloha {{ task.number }}</h1>
+            </div>
+
+            <details class="reader-mobile-toc exam-mobile-tasks">
+                <summary>Úlohy</summary>
+                <nav class="exam-task-list" aria-label="Úlohy maturity">
+                    {% for item in tasks %}
+                    <a href="{% url 'exams:exam_task_detail' exam.slug item.number %}"
+                       class="exam-task-link{% if item.pk == task.pk %} is-active{% endif %}">
+                        {{ item.number }}
+                    </a>
+                    {% endfor %}
+                </nav>
+            </details>
+
+            <div class="exam-statement">
+                {% if task.statement_image %}
+                <img src="{{ task.statement_image.url }}"
+                     alt="Originální zadání úlohy {{ task.number }} z testu {{ exam.title }}">
+                {% else %}
+                <div class="exam-statement-placeholder">
+                    Výřez zadání zatím nebyl vygenerován.
+                </div>
+                {% endif %}
+            </div>
+
+            <details class="exam-solution">
+                <summary>Zobrazit řešení</summary>
+
+                <article class="exam-solution-content reader-content online-content">
+                    {{ task.solution_html|safe }}
+                </article>
+            </details>
+
+            <nav class="reader-navigation">
+                <div class="reader-navigation-side">
+                    {% if previous_task %}
+                    <a href="{% url 'exams:exam_task_detail' exam.slug previous_task.number %}"
+                       class="reader-nav-link">
+                        <span class="reader-nav-label">← Předchozí</span>
+                        <strong>Úloha {{ previous_task.number }}</strong>
+                    </a>
+                    {% else %}
+                    <a href="{% url 'exams:exam_detail' exam.slug %}"
+                       class="reader-nav-link">
+                        <span class="reader-nav-label">← Přehled</span>
+                        <strong>{{ exam.title }}</strong>
+                    </a>
+                    {% endif %}
+                </div>
+
+                <div class="reader-navigation-side reader-navigation-next">
+                    {% if next_task %}
+                    <a href="{% url 'exams:exam_task_detail' exam.slug next_task.number %}"
+                       class="reader-nav-link">
+                        <span class="reader-nav-label">Další →</span>
+                        <strong>Úloha {{ next_task.number }}</strong>
+                    </a>
+                    {% endif %}
+                </div>
+            </nav>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

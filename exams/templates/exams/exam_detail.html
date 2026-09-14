@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}{{ exam.title }} | Mathera{% endblock %}
+
+{% block content %}
+
+<div class="exam-overview">
+
+    <nav class="breadcrumbs reader-breadcrumbs">
+        <a href="{% url 'core:home' %}">Domů</a>
+        <span>›</span>
+        <a href="{% url 'exams:exam_list' %}">Maturita</a>
+        <span>›</span>
+        <span>{{ exam.title }}</span>
+    </nav>
+
+    <div class="page-header">
+        <p class="eyebrow">{{ exam.get_term_display }} {{ exam.year }}</p>
+        <h1>{{ exam.title }}</h1>
+
+        {% if exam.description %}
+        <p class="hero-text">{{ exam.description }}</p>
+        {% endif %}
+    </div>
+
+    {% if first_task %}
+    <div class="exam-intro">
+        <div class="exam-intro-copy">
+            <p class="eyebrow">Online řešení</p>
+            <h2>{{ tasks|length }} úloh</h2>
+            <p>
+                Zadání je převzaté jako přesný výřez z originálního testu.
+                Řešení se zobrazí až po rozbalení.
+            </p>
+        </div>
+
+        <a href="{% url 'exams:exam_task_detail' exam.slug first_task.number %}" class="button">
+            Začít úlohou 1 →
+        </a>
+    </div>
+
+    <section class="exam-task-overview">
+        <p class="eyebrow">Úlohy</p>
+        <h2>Přejít na úlohu</h2>
+
+        <div class="exam-task-grid">
+            {% for task in tasks %}
+            <a href="{% url 'exams:exam_task_detail' exam.slug task.number %}"
+               class="exam-task-grid-link">
+                {{ task.number }}
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    {% if exam.source_pdf %}
+    <div class="exam-source-download">
+        <a href="{{ exam.source_pdf.url }}" class="button button-secondary" target="_blank" rel="noopener">
+            Otevřít originální test v PDF
+        </a>
+    </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}
