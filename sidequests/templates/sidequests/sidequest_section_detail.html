@@ -1,0 +1,223 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block title %}
+{{ section.title }} | {{ sidequest.title }} | Mathera
+{% endblock %}
+
+
+{% block content %}
+
+<div class="reader-page">
+
+    <nav class="breadcrumbs reader-breadcrumbs">
+
+        <a href="{% url 'core:home' %}">
+            Domů
+        </a>
+
+        <span>›</span>
+
+        <a href="{% url 'sidequests:sidequest_list' %}">
+            Ondrovy bokovky
+        </a>
+
+        <span>›</span>
+
+        <a href="{% url 'sidequests:sidequest_detail' sidequest.slug %}">
+            {{ sidequest.title }}
+        </a>
+
+        <span>›</span>
+
+        <span>
+            {{ section.title }}
+        </span>
+
+    </nav>
+
+
+    <div class="reader-grid" id="reader-grid">
+
+        <aside class="reader-sidebar" id="reader-sidebar">
+
+            <div class="reader-sidebar-inner">
+
+                <div class="reader-sidebar-section">
+
+                    <div class="reader-sidebar-label">
+                        Kapitoly
+                    </div>
+
+                    <nav class="reader-chapter-list" aria-label="Kapitoly bokovky">
+
+                        {% for chapter in sidequest.sections.all %}
+
+                            <a
+                                href="{% url 'sidequests:sidequest_section_detail' sidequest.slug chapter.slug %}"
+                                class="reader-chapter-link{% if chapter.pk == section.pk %} is-active{% endif %}"
+                            >
+                                {{ chapter.title }}
+                            </a>
+
+                        {% endfor %}
+
+                    </nav>
+
+                </div>
+
+
+                <div class="reader-sidebar-divider"></div>
+
+
+                <div class="reader-sidebar-section" id="reader-toc-section">
+
+                    <div class="reader-sidebar-label">
+                        Obsah kapitoly
+                    </div>
+
+                    <nav
+                        class="reader-toc"
+                        id="reader-toc"
+                        aria-label="Obsah kapitoly"
+                    >
+                    </nav>
+
+                </div>
+
+            </div>
+
+        </aside>
+
+
+        <div class="reader-main">
+
+            <div class="reader-header">
+
+                <p class="eyebrow">
+                    {{ sidequest.title }}
+                </p>
+
+                <h1>
+                    {{ section.title }}
+                </h1>
+
+            </div>
+
+
+            <details class="reader-mobile-toc reader-mobile-chapters">
+
+                <summary>
+                    Kapitoly
+                </summary>
+
+                <nav
+                    class="reader-chapter-list reader-chapter-list-mobile"
+                    aria-label="Kapitoly bokovky"
+                >
+
+                    {% for chapter in sidequest.sections.all %}
+
+                        <a
+                            href="{% url 'sidequests:sidequest_section_detail' sidequest.slug chapter.slug %}"
+                            class="reader-chapter-link{% if chapter.pk == section.pk %} is-active{% endif %}"
+                        >
+                            {{ chapter.title }}
+                        </a>
+
+                    {% endfor %}
+
+                </nav>
+
+            </details>
+
+
+            <details class="reader-mobile-toc" id="reader-mobile-toc">
+
+                <summary>
+                    Obsah kapitoly
+                </summary>
+
+                <nav
+                    class="reader-toc reader-toc-mobile"
+                    id="reader-toc-mobile"
+                    aria-label="Obsah kapitoly"
+                >
+                </nav>
+
+            </details>
+
+
+            <article
+                class="reader-content online-content"
+                id="reader-content"
+                style="--chapter-number: '{{ section.order }}';"
+            >
+
+                {{ section.html_content|safe }}
+
+            </article>
+
+
+            <nav class="reader-navigation">
+
+                <div class="reader-navigation-side">
+
+                    {% if previous_section %}
+
+                        <a
+                            href="{% url 'sidequests:sidequest_section_detail' sidequest.slug previous_section.slug %}"
+                            class="reader-nav-link"
+                        >
+
+                            <span class="reader-nav-label">
+                                ← Předchozí
+                            </span>
+
+                            <strong>
+                                {{ previous_section.title }}
+                            </strong>
+
+                        </a>
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="reader-navigation-side reader-navigation-next">
+
+                    {% if next_section %}
+
+                        <a
+                            href="{% url 'sidequests:sidequest_section_detail' sidequest.slug next_section.slug %}"
+                            class="reader-nav-link"
+                        >
+
+                            <span class="reader-nav-label">
+                                Další →
+                            </span>
+
+                            <strong>
+                                {{ next_section.title }}
+                            </strong>
+
+                        </a>
+
+                    {% endif %}
+
+                </div>
+
+            </nav>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script src="{% static 'js/reader-scrollspy.js' %}"></script>
+
+{% endblock %}

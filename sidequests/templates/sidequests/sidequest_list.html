@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Ondrovy bokovky | Mathera
+{% endblock %}
+
+
+{% block content %}
+
+<div class="page-header">
+
+    <nav class="breadcrumbs">
+
+        <a href="{% url 'core:home' %}">
+            Domů
+        </a>
+
+        <span>›</span>
+
+        <span>
+            Ondrovy bokovky
+        </span>
+
+    </nav>
+
+    <p class="eyebrow">
+        Matematické odbočky
+    </p>
+
+    <h1>
+        Ondrovy bokovky
+    </h1>
+
+    <p>
+        Věci z matematiky, kterými jsem se zabýval,
+        protože mě to z nějakého důvodu napadlo. :D
+    </p>
+
+</div>
+
+
+<div class="material-list">
+
+    {% for sidequest in sidequests %}
+
+        <article class="material-card">
+
+            <div class="material-info">
+
+                <span class="material-type">
+                    {% for tag in sidequest.tags.all %}
+                        {{ tag.name }}{% if not forloop.last %} · {% endif %}
+                    {% empty %}
+                        Bokovka
+                    {% endfor %}
+                </span>
+
+                <h3>
+                    {{ sidequest.title }}
+                </h3>
+
+                {% if sidequest.description %}
+
+                    <p>
+                        {{ sidequest.description }}
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+            <a
+                href="{% url 'sidequests:sidequest_detail' sidequest.slug %}"
+                class="button"
+            >
+                Zobrazit
+            </a>
+
+        </article>
+
+    {% empty %}
+
+        <div class="empty-state">
+
+            <h2>
+                Zatím tu nic není.
+            </h2>
+
+            <p>
+                První matematická bokovka se ještě připravuje.
+            </p>
+
+        </div>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}

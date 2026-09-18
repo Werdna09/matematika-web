@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     "accounts",
     "materials",
     "exams",
+    "sidequests",
 ]
 
 
