@@ -1,4 +1,7 @@
 from django.contrib import admin, messages
+from django.db import models
+
+from core.admin_widgets import DownloadableAdminFileWidget
 
 from .models import Exam, ExamTask
 from .services.tex_importer import ExamImportError, import_exam_tex
@@ -6,6 +9,10 @@ from .services.tex_importer import ExamImportError, import_exam_tex
 
 @admin.register(Exam)
 class ExamAdmin(admin.ModelAdmin):
+    formfield_overrides = {
+        models.FileField: {"widget": DownloadableAdminFileWidget},
+    }
+
     list_display = (
         "title",
         "year",

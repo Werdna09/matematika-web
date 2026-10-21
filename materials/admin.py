@@ -1,4 +1,7 @@
 from django.contrib import admin, messages
+from django.db import models
+
+from core.admin_widgets import DownloadableAdminFileWidget
 
 from .models import (
     Grade,
@@ -149,6 +152,10 @@ class MaterialSectionInline(admin.StackedInline):
 @admin.register(Material)
 class MaterialAdmin(admin.ModelAdmin):
     """Hlavní administrace výukových materiálů."""
+
+    formfield_overrides = {
+        models.FileField: {"widget": DownloadableAdminFileWidget},
+    }
 
     list_display = (
         "title",

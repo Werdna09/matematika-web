@@ -1,4 +1,7 @@
 from django.contrib import admin, messages
+from django.db import models
+
+from core.admin_widgets import DownloadableAdminFileWidget
 
 from .models import SideQuest, SideQuestSection
 from .services.tex_importer import (
@@ -31,6 +34,10 @@ class SideQuestSectionInline(admin.TabularInline):
 
 @admin.register(SideQuest)
 class SideQuestAdmin(admin.ModelAdmin):
+    formfield_overrides = {
+        models.FileField: {"widget": DownloadableAdminFileWidget},
+    }
+
     list_display = (
         "title",
         "status",
