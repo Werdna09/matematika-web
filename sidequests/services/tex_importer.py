@@ -1,4 +1,3 @@
-\
 import re
 import subprocess
 import tempfile
@@ -6,6 +5,7 @@ import tempfile
 from pathlib import Path
 
 from django.conf import settings
+from django.core.files.base import ContentFile
 from django.db import transaction
 from django.utils.text import slugify
 
@@ -29,6 +29,9 @@ LUA_FILTER = (
     / "pandoc"
     / "mathera.lua"
 )
+
+PDFLATEX_RUNS = 2
+PDFLATEX_TIMEOUT_SECONDS = 180
 
 
 DOCUMENT_BEGIN_RE = re.compile(
@@ -57,7 +60,6 @@ LEADING_HTML_HEADING_RE = re.compile(
 
 def _unique_slug(base_slug, used_slugs):
     slug = base_slug or "kapitola"
-
     candidate = slug
     counter = 2
 
@@ -86,18 +88,14 @@ def _document_parts(source):
         )
 
     prefix = source[:begin_match.end()]
-    body = source[
-        begin_match.end():end_match.start()
-    ]
+    body = source[begin_match.end():end_match.start()]
     suffix = source[end_match.start():]
 
     return prefix, body, suffix
 
 
 def _split_marked_sections(body):
-    markers = list(
-        SECTION_MARKER_RE.finditer(body)
-    )
+    markers = list(SECTION_MARKER_RE.finditer(body))
 
     if not markers:
         raise SideQuestImportError(
@@ -118,17 +116,13 @@ def _split_marked_sections(body):
             )
 
         content_start = marker.end()
+        content_end = (
+            markers[index + 1].start()
+            if index + 1 < len(markers)
+            else len(body)
+        )
 
-        if index + 1 < len(markers):
-            content_end = markers[
-                index + 1
-            ].start()
-        else:
-            content_end = len(body)
-
-        content = body[
-            content_start:content_end
-        ].strip()
+        content = body[content_start:content_end].strip()
 
         if not content:
             raise SideQuestImportError(
@@ -146,9 +140,7 @@ def _split_marked_sections(body):
                 "slug": section_slug,
                 "source": content,
                 "starts_with_heading": bool(
-                    LEADING_LATEX_HEADING_RE.match(
-                        content
-                    )
+                    LEADING_LATEX_HEADING_RE.match(content)
                 ),
             }
         )
@@ -169,10 +161,7 @@ def _run_pandoc(source, source_dir):
             delete=False,
         ) as temp_file:
             temp_file.write(source)
-
-            processed_tex = Path(
-                temp_file.name
-            )
+            processed_tex = Path(temp_file.name)
 
         try:
             result = subprocess.run(
@@ -195,23 +184,82 @@ def _run_pandoc(source, source_dir):
 
         except FileNotFoundError:
             raise SideQuestImportError(
-                "Pandoc nebyl nalezen. "
-                "Zkontroluj, že je dostupný v PATH."
+                "Pandoc nebyl nalezen. Zkontroluj, že je dostupný v PATH."
             )
 
         except subprocess.CalledProcessError as error:
             raise SideQuestImportError(
-                "Pandoc nedokázal LaTeX převést:\n"
-                + error.stderr
+                "Pandoc nedokázal LaTeX převést:\n" + error.stderr
             ) from error
 
         return result.stdout
 
     finally:
         if processed_tex is not None:
-            processed_tex.unlink(
-                missing_ok=True
+            processed_tex.unlink(missing_ok=True)
+
+
+def _compile_pdf(tex_file):
+    with tempfile.TemporaryDirectory(
+        prefix="mathera_sidequest_pdf_"
+    ) as temp_dir:
+        output_dir = Path(temp_dir)
+
+        command = [
+            "pdflatex",
+            "-interaction=nonstopmode",
+            "-halt-on-error",
+            "-file-line-error",
+            f"-output-directory={output_dir}",
+            tex_file.name,
+        ]
+
+        for run_number in range(1, PDFLATEX_RUNS + 1):
+            try:
+                subprocess.run(
+                    command,
+                    cwd=tex_file.parent,
+                    capture_output=True,
+                    text=True,
+                    encoding="utf-8",
+                    errors="replace",
+                    check=True,
+                    timeout=PDFLATEX_TIMEOUT_SECONDS,
+                )
+
+            except FileNotFoundError as error:
+                raise SideQuestImportError(
+                    "pdflatex nebyl nalezen. Zkontroluj, že je dostupný v PATH."
+                ) from error
+
+            except subprocess.TimeoutExpired as error:
+                raise SideQuestImportError(
+                    "Generování PDF překročilo časový limit "
+                    f"{PDFLATEX_TIMEOUT_SECONDS} s "
+                    f"(průchod {run_number}/{PDFLATEX_RUNS})."
+                ) from error
+
+            except subprocess.CalledProcessError as error:
+                details = (
+                    error.stdout
+                    or error.stderr
+                    or "pdflatex nevrátil podrobnosti."
+                )
+
+                raise SideQuestImportError(
+                    "pdflatex nedokázal vytvořit PDF "
+                    f"(průchod {run_number}/{PDFLATEX_RUNS}):\n"
+                    + details[-12000:]
+                ) from error
+
+        pdf_path = output_dir / f"{tex_file.stem}.pdf"
+
+        if not pdf_path.exists():
+            raise SideQuestImportError(
+                "pdflatex skončil bez chyby, ale výsledné PDF nebylo nalezeno."
             )
+
+        return pdf_path.read_bytes()
 
 
 def _convert_section_to_html(
@@ -236,9 +284,7 @@ def _convert_section_to_html(
             + str(error)
         ) from error
 
-    source = preprocess_tex(
-        source
-    )
+    source = preprocess_tex(source)
 
     try:
         html = _run_pandoc(
@@ -268,7 +314,6 @@ def _convert_section_to_html(
 
 def _replace_sections(sidequest, sections):
     sidequest.sections.all().delete()
-
     created_sections = []
 
     for order, section_data in enumerate(
@@ -283,19 +328,46 @@ def _replace_sections(sidequest, sections):
             order=order,
         )
 
-        created_sections.append(
-            section
-        )
+        created_sections.append(section)
 
     return created_sections
+
+
+def _save_generated_pdf(sidequest, pdf_bytes):
+    old_name = (
+        sidequest.pdf_file.name
+        if sidequest.pdf_file
+        else ""
+    )
+
+    storage = sidequest.pdf_file.storage
+
+    sidequest.pdf_file.save(
+        f"{sidequest.slug}.pdf",
+        ContentFile(pdf_bytes),
+        save=False,
+    )
+
+    new_name = sidequest.pdf_file.name
+
+    sidequest.save(
+        update_fields=[
+            "pdf_file",
+            "updated_at",
+        ]
+    )
+
+    if old_name and old_name != new_name:
+        transaction.on_commit(
+            lambda name=old_name: storage.delete(name)
+        )
 
 
 def import_sidequest_tex(sidequest, tex_file=None):
     if tex_file is None:
         if not sidequest.source_tex:
             raise SideQuestImportError(
-                f'Bokovka "{sidequest.title}" '
-                "nemá nahraný zdrojový LaTeX."
+                f'Bokovka "{sidequest.title}" nemá nahraný zdrojový LaTeX.'
             )
 
         try:
@@ -309,9 +381,7 @@ def import_sidequest_tex(sidequest, tex_file=None):
             )
 
     else:
-        tex_file = Path(
-            tex_file
-        ).resolve()
+        tex_file = Path(tex_file).resolve()
 
     if not tex_file.exists():
         raise SideQuestImportError(
@@ -343,14 +413,12 @@ def import_sidequest_tex(sidequest, tex_file=None):
             f"Zdrojový LaTeX se nepodařilo načíst: {error}"
         ) from error
 
-    prefix, body, suffix = _document_parts(
-        source
-    )
+    # PDF se připraví z původního zdroje.
+    # Do databáze ani media se zatím nic nezapisuje.
+    pdf_bytes = _compile_pdf(tex_file)
 
-    marked_sections = _split_marked_sections(
-        body
-    )
-
+    prefix, body, suffix = _document_parts(source)
+    marked_sections = _split_marked_sections(body)
     converted_sections = []
 
     for section_data in marked_sections:
@@ -371,9 +439,7 @@ def import_sidequest_tex(sidequest, tex_file=None):
             source_dir=tex_file.parent,
             title=section_data["title"],
             strip_leading_heading=(
-                section_data[
-                    "starts_with_heading"
-                ]
+                section_data["starts_with_heading"]
             ),
         )
 
@@ -385,12 +451,15 @@ def import_sidequest_tex(sidequest, tex_file=None):
             }
         )
 
-    # Do databáze saháme až po úspěšném převodu všech kapitol.
-    # Při chybě tak zůstane předchozí webová verze zachována.
     with transaction.atomic():
         created_sections = _replace_sections(
             sidequest,
             converted_sections,
+        )
+
+        _save_generated_pdf(
+            sidequest,
+            pdf_bytes,
         )
 
     return created_sections

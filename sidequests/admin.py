@@ -72,9 +72,7 @@ class SideQuestAdmin(admin.ModelAdmin):
 
         for sidequest in queryset:
             try:
-                import_sidequest_tex(
-                    sidequest
-                )
+                import_sidequest_tex(sidequest)
 
             except SideQuestImportError as error:
                 self.message_user(
@@ -89,7 +87,10 @@ class SideQuestAdmin(admin.ModelAdmin):
         if imported:
             self.message_user(
                 request,
-                f"Úspěšně importováno: {imported}.",
+                (
+                    f"Úspěšně importováno: {imported}. "
+                    "HTML i PDF byly znovu vygenerovány."
+                ),
                 level=messages.SUCCESS,
             )
 
@@ -112,14 +113,9 @@ class SideQuestAdmin(admin.ModelAdmin):
             change,
         )
 
-        if (
-            source_changed
-            and obj.source_tex
-        ):
+        if source_changed and obj.source_tex:
             try:
-                sections = import_sidequest_tex(
-                    obj
-                )
+                sections = import_sidequest_tex(obj)
 
             except SideQuestImportError as error:
                 self.message_user(
@@ -133,7 +129,8 @@ class SideQuestAdmin(admin.ModelAdmin):
                 request,
                 (
                     "Bokovka byla úspěšně importována. "
-                    f"Kapitol: {len(sections)}."
+                    f"Kapitol: {len(sections)}. "
+                    "PDF bylo automaticky vygenerováno."
                 ),
                 level=messages.SUCCESS,
             )
