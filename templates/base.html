@@ -11,6 +11,7 @@
     <meta name="description" content="Mathera — přehledné materiály a podklady pro středoškolskou matematiku.">
 
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script defer src="{% static 'js/mobile-nav.js' %}"></script>
 
     <link rel="icon" type="image/x-icon" href="{% static 'favicon/favicon.ico' %}">
     <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon/favicon-32x32.png' %}">
@@ -39,7 +40,12 @@
                 <span>Mathera</span>
             </a>
 
-            <div class="header-actions">
+            <button type="button" class="nav-toggle" aria-expanded="false"
+                aria-controls="header-actions" aria-label="Otevřít menu" hidden>
+                <span class="nav-toggle-icon" aria-hidden="true"></span>
+            </button>
+
+            <div class="header-actions" id="header-actions">
 
                 <nav class="main-nav" aria-label="Hlavní navigace">
                     <a href="{% url 'core:home' %}">Domů</a>

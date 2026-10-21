@@ -143,6 +143,11 @@ img {
 }
 
 
+.nav-toggle {
+    display: none;
+}
+
+
 .header-actions {
     display: flex;
     align-items: center;
@@ -1028,21 +1033,116 @@ section {
 
         padding: 14px 0;
 
-        align-items: flex-start;
-        flex-direction: column;
+        align-items: center;
+    }
+
+
+    .site-header.nav-ready .nav-toggle {
+        width: 44px;
+        height: 44px;
+        padding: 0;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        background: var(--surface);
+        color: var(--text);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+    }
+
+
+    .nav-toggle:hover {
+        background: var(--surface-hover);
+        border-color: var(--border-hover);
+    }
+
+
+    .nav-toggle:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 3px;
+    }
+
+
+    .nav-toggle-icon,
+    .nav-toggle-icon::before,
+    .nav-toggle-icon::after {
+        width: 18px;
+        height: 2px;
+        background: currentColor;
+    }
+
+
+    .nav-toggle-icon {
+        position: relative;
+    }
+
+
+    .nav-toggle-icon::before,
+    .nav-toggle-icon::after {
+        content: "";
+        position: absolute;
+        left: 0;
+    }
+
+
+    .nav-toggle-icon::before {
+        top: -6px;
+    }
+
+
+    .nav-toggle-icon::after {
+        top: 6px;
+    }
+
+
+    .nav-toggle[aria-expanded="true"] .nav-toggle-icon {
+        background: transparent;
+    }
+
+
+    .nav-toggle[aria-expanded="true"] .nav-toggle-icon::before {
+        transform: translateY(6px) rotate(45deg);
+    }
+
+
+    .nav-toggle[aria-expanded="true"] .nav-toggle-icon::after {
+        transform: translateY(-6px) rotate(-45deg);
     }
 
 
     .header-actions {
         width: 100%;
+        padding-top: 12px;
 
         flex-direction: column;
         align-items: stretch;
+
+        border-top: 1px solid var(--border);
+    }
+
+
+    .site-header.nav-ready .header-actions {
+        display: none;
+    }
+
+
+    .site-header.nav-ready.menu-open .header-actions {
+        display: flex;
     }
 
 
     .site-header nav {
-        gap: 10px 16px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+    }
+
+
+    .site-header nav a {
+        padding: 9px 0;
     }
 
 
